@@ -3,6 +3,7 @@ package co.unicauca.justEat.server.access;
 
 import co.unicauca.justeat.commons.infra.Utilities;
 import co.unicauca.justeat.server.access.IRestauranRepository;
+import co.unicauca.justeat.server.access.RestaurantRepositoryImplMysql;
 
 /**
  * Fabrica que se encarga de instanciar un repositorio concreto
@@ -47,8 +48,9 @@ public class Factory {
             case "default":
                 result = new RestauranRepositoryImplArrays();
                 break;
+            case "mysql":
+                result = new RestaurantRepositoryImplMysql();
         }
-
         return result;
 
     }
