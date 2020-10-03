@@ -44,7 +44,7 @@ public class RestauranRepositoryImplArrays  implements IRestauranRepository{
     }
 
     @Override
-    public String createRestaurant(Restaurant parRestauran) {
+    public int createRestaurant(Restaurant parRestauran) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

@@ -21,5 +21,5 @@ public interface IRestauranRepository {
      * @param parRestauran objeto tipo restaurante
      * @return 
      */
-    public String createRestaurant(Restaurant parRestauran);
+    public int createRestaurant(Restaurant parRestauran);
 }
