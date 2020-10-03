@@ -32,6 +32,9 @@ public class RestauranRepositoryImplArrays  implements IRestauranRepository{
     }
     
     public void inicializar(){
+        restaurants.add(new Restaurant(100, 999, "Sabroso", "Carrera 40 1-36", "Popayan", "China"));
+        restaurants.add(new Restaurant(101, 998, "Deli", "Carrera 42 1-36", "Popayan", "De mar"));
+        restaurants.add(new Restaurant(102, 997, "La20", "Carrera 403 12-36", "Popayan", "Pollo asado"));
     }
     /**
      * 
@@ -40,12 +43,18 @@ public class RestauranRepositoryImplArrays  implements IRestauranRepository{
      */
     @Override
     public Restaurant findRestaurant(int resId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+              for (Restaurant restaurant : restaurants) {
+            if (restaurant.getResId()==resId) {
+                return restaurant;
+            }
+        }
+        return null;
     }
 
     @Override
     public int createRestaurant(Restaurant parRestauran) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+          restaurants.add(parRestauran);
+        return parRestauran.getResId();
     }
     
 }
