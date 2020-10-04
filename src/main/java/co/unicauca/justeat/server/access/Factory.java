@@ -34,7 +34,7 @@ public class Factory {
 
     /**
      * Método que crea una instancia concreta de la jerarquia
-     * ICustomerRepository
+     * IRestauranRepository
      *
      * @return una clase hija de la abstracción IRepositorioClientes
      */

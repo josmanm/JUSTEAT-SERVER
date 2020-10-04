@@ -138,10 +138,10 @@ public class JustEatServerSocket  implements Runnable {
     }
 
         /**
-     * Convierte el objeto Customer a json para que el servidor lo envie como
+     * Convierte el objeto Restaurant a json para que el servidor lo envie como
      * respuesta por el socket
      *
-     * @param customer cliente
+     * @param parRest cliente
      * @return customer en formato json
      */
     private String objectToJSON(Restaurant parRest) {
