@@ -5,8 +5,6 @@
  */
 package co.unicauca.justeat.server.infra;
 
-
-
 import co.unicauca.justEat.server.access.Factory;
 import co.unicauca.justeat.commons.domain.Restaurant;
 import co.unicauca.justeat.commons.infra.JsonError;
@@ -29,10 +27,10 @@ import java.util.logging.Logger;
  *
  * @author SANTIAGO MUÑOZ
  */
-public class JustEatServerSocket  implements Runnable {
+public class JustEatServerSocket implements Runnable {
+
     /**
-    private fin
-     * Servicio de clientes
+     * private fin Servicio de clientes
      */
     private final RestaurantService service;
     /**
@@ -55,13 +53,14 @@ public class JustEatServerSocket  implements Runnable {
      * Puerto por donde escucha el server socket
      */
     private static final int PORT = Integer.parseInt(Utilities.loadProperty("server.port"));
-    
-    public JustEatServerSocket(){
+
+    public JustEatServerSocket() {
         // Se hace la inyección de dependencia
         IRestauranRepository repository = Factory.getInstance().getRepository();
         service = new RestaurantService(repository);
     }
-     /**
+
+    /**
      * Arranca el servidor y hace la estructura completa
      */
     public void start() {
@@ -72,7 +71,7 @@ public class JustEatServerSocket  implements Runnable {
             throwThread();
         }
     }
-    
+
     /**
      * Instancia el server socket y abre el puerto respectivo
      */
@@ -84,7 +83,7 @@ public class JustEatServerSocket  implements Runnable {
             Logger.getLogger(JustEatServerSocket.class.getName()).log(Level.SEVERE, "Error del server socket al abrir el puerto", ex);
         }
     }
- 
+
     /**
      * Espera que el cliente se conecta y le devuelve un socket
      */
@@ -93,18 +92,18 @@ public class JustEatServerSocket  implements Runnable {
             socket = ssock.accept();
             Logger.getLogger("Socket").log(Level.INFO, "Socket conectado");
         } catch (IOException ex) {
-            Logger.getLogger(JustEatServerSocket.class.getName()).log(Level.SEVERE, "Eror al abrir un socket", ex);
+            Logger.getLogger(JustEatServerSocket.class.getName()).log(Level.SEVERE, "Error al abrir un socket", ex);
         }
     }
-    
-    
+
     /**
      * Lanza el hilo
      */
     private static void throwThread() {
         new Thread(new JustEatServerSocket()).start();
     }
-       private void processRequest(String requestJson) {
+
+    private void processRequest(String requestJson) {
         // Convertir la solicitud a objeto Protocol para poderlo procesar
         Gson gson = new Gson();
         Protocol protocolRequest = gson.fromJson(requestJson, Protocol.class);
@@ -119,6 +118,7 @@ public class JustEatServerSocket  implements Runnable {
         }
 
     }
+
     /**
      * Procesa la solicitud de agregar un Restaurante
      *
@@ -132,12 +132,12 @@ public class JustEatServerSocket  implements Runnable {
         varRestaurant.setResNom(protocolRequest.getParameters().get(2).getValue());
         varRestaurant.setResDireccion(protocolRequest.getParameters().get(3).getValue());
         varRestaurant.setResCiudad(protocolRequest.getParameters().get(4).getValue());
-        varRestaurant.setResTematicaComida(protocolRequest.getParameters().get(5).getValue()); 
+        varRestaurant.setResTematicaComida(protocolRequest.getParameters().get(5).getValue());
         String response = service.CreateRestauran(varRestaurant);
         output.println(response);
     }
 
-        /**
+    /**
      * Convierte el objeto Customer a json para que el servidor lo envie como
      * respuesta por el socket
      *
@@ -149,7 +149,7 @@ public class JustEatServerSocket  implements Runnable {
         String strObject = gson.toJson(parRest);
         return strObject;
     }
-    
+
     /**
      * Crea los flujos con el socket
      *
@@ -175,7 +175,7 @@ public class JustEatServerSocket  implements Runnable {
             output.println(errorJson);
         }
     }
-    
+
     /**
      * Genera un ErrorJson genérico
      *
@@ -194,8 +194,8 @@ public class JustEatServerSocket  implements Runnable {
 
         return errorJson;
     }
-    
-        /**
+
+    /**
      * Cierra los flujos de entrada y salida
      *
      * @throws IOException
@@ -205,16 +205,16 @@ public class JustEatServerSocket  implements Runnable {
         input.close();
         socket.close();
     }
-    
+
     @Override
     public void run() {
-                try {
+        try {
             createStreams();
             readStream();
             closeStream();
 
         } catch (IOException ex) {
-            Logger.getLogger(JustEatServerSocket.class.getName()).log(Level.SEVERE, "Eror al leer el flujo", ex);
+            Logger.getLogger(JustEatServerSocket.class.getName()).log(Level.SEVERE, "Error al leer el flujo", ex);
         }
     }
 }

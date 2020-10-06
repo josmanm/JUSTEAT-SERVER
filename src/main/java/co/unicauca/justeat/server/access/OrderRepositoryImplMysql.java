@@ -5,57 +5,30 @@
  */
 package co.unicauca.justeat.server.access;
 
-
-
-import co.unicauca.justeat.commons.domain.Restaurant;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  *
- * @author SANTIAGO MUÑOZ
+ * @author juang
  */
-public class RestauranRepositoryImplArrays  implements IRestauranRepository{
-    /**
-     * Array de lista de Restaurantes
-     */
-    private static List<Restaurant> restaurants;
-    
-    public RestauranRepositoryImplArrays(){
-          if (restaurants == null){
-            restaurants = new ArrayList();
-        }
-        
-        if (restaurants.size() == 0){
-            inicializar();
-        }
-    }
-    
-    public void inicializar(){
-    }
-    /**
-     * 
-     * @param resId
-     * @return 
-     */
+public class OrderRepositoryImplMysql implements IOrderRepository {
+
     @Override
-    public Restaurant findRestaurant(int resId) {
+    public String createOrder() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public String createRestaurant(Restaurant parRestauran) {
+    public String updateOrder() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public String deleteRestaurant() {
+    public String deleteOrder() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public String updateRestaurant() {
+    public String findOrder() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
 }
