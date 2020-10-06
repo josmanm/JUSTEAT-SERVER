@@ -19,15 +19,17 @@ import java.util.logging.Logger;
  *
  * @author SANTIAGO MUÑOZ
  */
-public class RestaurantRepositoryImplMysql  implements IRestauranRepository{
+public class RestaurantRepositoryImplMysql implements IRestauranRepository {
+
     /**
      * Coneccion con Mysql
      */
     public Connection conn;
-    
-    public RestaurantRepositoryImplMysql(){
-        
-    }    
+
+    public RestaurantRepositoryImplMysql() {
+
+    }
+
     /**
      * Permite hacer la conexion con la base de datos
      *
@@ -48,25 +50,24 @@ public class RestaurantRepositoryImplMysql  implements IRestauranRepository{
         return -1;
     }
 
-    
     @Override
     public Restaurant findRestaurant(int resId) {
-                Restaurant restaurant=null;
+        Restaurant restaurant = null;
         this.connect();
         try {
-            String sql="SELECT * from Restaurante where id=? ";
+            String sql = "SELECT * from Restaurante where id=? ";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, resId+"");
-            ResultSet res=pstmt.executeQuery();
-            
-            if(res.next()){
+            pstmt.setString(1, resId + "");
+            ResultSet res = pstmt.executeQuery();
+
+            if (res.next()) {
                 restaurant = new Restaurant();
                 restaurant.setResId(Integer.parseInt(res.getString("resId")));
                 restaurant.setAdminId(Integer.parseInt(res.getString("adminId")));
                 restaurant.setResNom(res.getString("resNom"));
                 restaurant.setResDireccion(res.getString("resDireccion"));
                 restaurant.setResCiudad(res.getString("resCiudad"));
-                restaurant.setResTematicaComida(res.getString("resTematicaComida")); 
+                restaurant.setResTematicaComida(res.getString("resTematicaComida"));
             }
             pstmt.close();
             this.disconnect();
@@ -77,10 +78,10 @@ public class RestaurantRepositoryImplMysql  implements IRestauranRepository{
     }
 
     @Override
-    public int createRestaurant(Restaurant parRestauran) {
+    public String createRestaurant(Restaurant parRestauran) {
         try {
             this.connect();
-            String sql="INSERT INTO Restaurante(resId,adminId,resNom,resDireccion,resCiudad,resTematicaComida) VALUES (?,?,?,?,?,?)";
+            String sql = "INSERT INTO Restaurante(resId,adminId,resNom,resDireccion,resCiudad,resTematicaComida) VALUES (?,?,?,?,?,?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, parRestauran.getResId());
             pstmt.setInt(2, parRestauran.getAdminId());
@@ -88,20 +89,31 @@ public class RestaurantRepositoryImplMysql  implements IRestauranRepository{
             pstmt.setString(4, parRestauran.getResDireccion());
             pstmt.setString(5, parRestauran.getResCiudad());
             pstmt.setString(6, parRestauran.getResTematicaComida());
-            
+
             pstmt.executeUpdate();
             pstmt.close();
             this.disconnect();
         } catch (SQLException ex) {
             Logger.getLogger(IRestauranRepository.class.getName()).log(Level.SEVERE, "Error al insertar el registro", ex);
         }
-        return parRestauran.getResId();
+        return Integer.toString(parRestauran.getResId());
     }
+
     private void disconnect() {
-                try {
+        try {
             conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(RestaurantRepositoryImplMysql.class.getName()).log(Level.FINER, "Error al cerrar Connection", ex);
         }
-    }     
+    }
+
+    @Override
+    public String deleteRestaurant() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String updateRestaurant() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
