@@ -6,8 +6,12 @@ import co.unicauca.justeat.commons.domain.Restaurant;
 
 
 /**
- * Interface del respositorio de Restaurante
+ *
  * @author SANTIAGO MUÑOZ
+ *         KEVIN ALARCON
+ *         JUAN JOSE LOPEZ
+ *         SANTIAGO CORDOBA
+ *         DANIEL MUÑOZ
  */
 public interface IRestauranRepository {
         /**

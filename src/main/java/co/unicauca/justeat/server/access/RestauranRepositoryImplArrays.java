@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.unicauca.justeat.server.access;
 
 
@@ -14,6 +9,10 @@ import java.util.List;
 /**
  *
  * @author SANTIAGO MUÑOZ
+ *         KEVIN ALARCON
+ *         JUAN JOSE LOPEZ
+ *         SANTIAGO CORDOBA
+ *         DANIEL MUÑOZ
  */
 public class RestauranRepositoryImplArrays  implements IRestauranRepository{
     /**
@@ -52,9 +51,19 @@ public class RestauranRepositoryImplArrays  implements IRestauranRepository{
     }
 
     @Override
-    public int createRestaurant(Restaurant parRestauran) {
+    public String createRestaurant(Restaurant parRestauran) {
           restaurants.add(parRestauran);
-        return parRestauran.getResId();
+        return parRestauran.getResId() + "";
+    }
+
+    @Override
+    public String deleteRestaurant() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String updateRestaurant() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

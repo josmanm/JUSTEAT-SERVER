@@ -6,9 +6,12 @@ import co.unicauca.justeat.server.access.RestauranRepositoryImplArrays;
 import co.unicauca.justeat.server.access.RestaurantRepositoryImplMysql;
 
 /**
- * Fabrica que se encarga de instanciar un repositorio concreto
  *
- * @author Libardo, Julio
+ * @author SANTIAGO MUÑOZ
+ *         KEVIN ALARCON
+ *         JUAN JOSE LOPEZ
+ *         SANTIAGO CORDOBA
+ *         DANIEL MUÑOZ
  */
 public class Factory {
 
@@ -40,7 +43,7 @@ public class Factory {
     public IRestauranRepository getRepository() {
         String type = Utilities.loadProperty("customer.repository");
         if (type.isEmpty()) {
-            type = "default";
+            type = "mysql";
         }
         IRestauranRepository result = null;
 
