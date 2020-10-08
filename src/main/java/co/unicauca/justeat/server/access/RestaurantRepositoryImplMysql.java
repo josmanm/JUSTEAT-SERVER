@@ -80,7 +80,7 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
     public String createRestaurant(Restaurant parRestauran) {
         try {
             this.connect();
-            String sql = "INSERT INTO Restaurante(resId,adminId,resNom,resDireccion,resCiudad,resTematicaComida) VALUES (?,?,?,?,?,?)";
+            String sql = "INSERT INTO Restaurante(RestId,AdminId,RestNom,RestDireccion,RestCiudad,RestTematicaComida) VALUES (?,?,?,?,?,?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, parRestauran.getResId());
             pstmt.setInt(2, parRestauran.getAdminId());
@@ -93,7 +93,7 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
             pstmt.close();
             this.disconnect();
         } catch (SQLException ex) {
-            Logger.getLogger(IRestauranRepository.class.getName()).log(Level.SEVERE, "Error al insertar el registro", ex);
+            Logger.getLogger(RestaurantRepositoryImplMysql.class.getName()).log(Level.SEVERE, "Error al insertar el registro", ex);
         }
         return Integer.toString(parRestauran.getResId());
     }
