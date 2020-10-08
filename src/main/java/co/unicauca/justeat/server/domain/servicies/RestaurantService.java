@@ -4,6 +4,7 @@ import co.unicauca.justeat.commons.domain.Restaurant;
 import co.unicauca.justeat.commons.infra.JsonError;
 import co.unicauca.justeat.commons.infra.Utilities;
 import co.unicauca.justeat.server.access.IRestauranRepository;
+import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class RestaurantService {
      * @param parRest
      * @return
      */
-    public String CreateRestauran(Restaurant parRest) {
+    public String CreateRestaurant(Restaurant parRest) {
         List<JsonError> errors = new ArrayList<>();
         if (parRest.getResCiudad().isEmpty() || parRest.getResNom().isEmpty() || parRest.getResDireccion().isEmpty()
                 || parRest.getResCiudad().isEmpty() || parRest.getResTematicaComida().isEmpty() || Integer.toString(parRest.getResId()).isEmpty()) {
@@ -62,6 +63,12 @@ public class RestaurantService {
 
         if (!Utilities.isNumeric(Integer.toString(parRest.getAdminId()))) {
             errors.add(new JsonError("400", "BAD_REQUEST", "El id del administrador debe contener solo digitos. "));
+        }
+        
+        if(!errors.isEmpty()){
+            Gson gson = new Gson();
+            String errorJson = gson.toJson(errors);
+            return errorJson;
         }
 
         return repo.createRestaurant(parRest); 

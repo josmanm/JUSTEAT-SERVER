@@ -41,9 +41,9 @@ public class Factory {
      * @return una clase hija de la abstracción IRepositorioClientes
      */
     public IRestauranRepository getRepository() {
-        String type = Utilities.loadProperty("customer.repository");
+        String type = Utilities.loadProperty("restaurant.repository");
         if (type.isEmpty()) {
-            type = "mysql";
+            type = "default";
         }
         IRestauranRepository result = null;
 
@@ -53,8 +53,8 @@ public class Factory {
                 break;
             case "mysql":
                 result = new RestaurantRepositoryImplMysql();
+                break;
         }
         return result;
-
     }
 }

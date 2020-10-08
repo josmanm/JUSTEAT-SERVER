@@ -6,7 +6,7 @@ import co.unicauca.justeat.commons.domain.Restaurant;
 
 
 /**
- *
+ *Interface del respositorio de restaurantes
  * @author SANTIAGO MUÑOZ
  *         KEVIN ALARCON
  *         JUAN JOSE LOPEZ
@@ -15,7 +15,7 @@ import co.unicauca.justeat.commons.domain.Restaurant;
  */
 public interface IRestauranRepository {
         /**
-     * Busca un Restauran por su Id
+     * Busca un Restaurant por su Id
      * @param resId id del restaurante
      * @return  objeto de tipo Customer
      */

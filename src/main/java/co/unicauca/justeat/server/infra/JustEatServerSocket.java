@@ -70,6 +70,13 @@ public class JustEatServerSocket implements Runnable {
             throwThread();
         }
     }
+    
+    /**
+     * Lanza el hilo
+     */
+    private static void throwThread() {
+        new Thread(new JustEatServerSocket()).start();
+    }
 
     /**
      * Instancia el server socket y abre el puerto respectivo
@@ -94,61 +101,22 @@ public class JustEatServerSocket implements Runnable {
             Logger.getLogger(JustEatServerSocket.class.getName()).log(Level.SEVERE, "Error al abrir un socket", ex);
         }
     }
-
     /**
-     * Lanza el hilo
+     * Cuerpo del hilo
      */
-    private static void throwThread() {
-        new Thread(new JustEatServerSocket()).start();
-    }
+    
+    @Override
+    public void run() {
+        try {
+            createStreams();
+            readStream();
+            closeStream();
 
-    private void processRequest(String requestJson) {
-        // Convertir la solicitud a objeto Protocol para poderlo procesar
-        Gson gson = new Gson();
-        Protocol protocolRequest = gson.fromJson(requestJson, Protocol.class);
-
-        switch (protocolRequest.getResource()) {
-            case "Restaurante":
-                if (protocolRequest.getAction().equals("post")) {
-                    // Agregar un customer    
-                    processPostRestaurant(protocolRequest);
-                }
-                break;
+        } catch (IOException ex) {
+            Logger.getLogger(JustEatServerSocket.class.getName()).log(Level.SEVERE, "Error al leer el flujo", ex);
         }
-
     }
-
-    /**
-     * Procesa la solicitud de agregar un Restaurante
-     *
-     * @param protocolRequest Protocolo de la solicitud
-     */
-    private void processPostRestaurant(Protocol protocolRequest) {
-        Restaurant varRestaurant = new Restaurant();
-        // Reconstruir el customer a partid de lo que viene en los parámetros
-        varRestaurant.setResId(Integer.parseInt((protocolRequest.getParameters().get(0).getValue())));
-        varRestaurant.setAdminId(Integer.parseInt(protocolRequest.getParameters().get(1).getValue()));
-        varRestaurant.setResNom(protocolRequest.getParameters().get(2).getValue());
-        varRestaurant.setResDireccion(protocolRequest.getParameters().get(3).getValue());
-        varRestaurant.setResCiudad(protocolRequest.getParameters().get(4).getValue());
-        varRestaurant.setResTematicaComida(protocolRequest.getParameters().get(5).getValue());
-        String response = service.CreateRestauran(varRestaurant);
-        output.println(response);
-    }
-
-        /**
-     * Convierte el objeto Restaurant a json para que el servidor lo envie como
-     * respuesta por el socket
-     *
-     * @param parRest cliente
-     * @return customer en formato json
-     */
-    private String objectToJSON(Restaurant parRest) {
-        Gson gson = new Gson();
-        String strObject = gson.toJson(parRest);
-        return strObject;
-    }
-
+    
     /**
      * Crea los flujos con el socket
      *
@@ -158,7 +126,7 @@ public class JustEatServerSocket implements Runnable {
         output = new PrintStream(socket.getOutputStream());
         input = new Scanner(socket.getInputStream());
     }
-
+    
     /**
      * Lee el flujo del socket
      */
@@ -173,6 +141,91 @@ public class JustEatServerSocket implements Runnable {
             String errorJson = generateErrorJson();
             output.println(errorJson);
         }
+    }
+    
+    /**
+     * Procesar la solicitud que proviene de la aplicación cliente
+     *
+     * @param requestJson petición que proviene del cliente socket en formato
+     * json que viene de esta manera:
+     * "{"resource":"customer","action":"get","parameters":[{"name":"id","value":"1"}]}"
+     *
+     */
+    private void processRequest(String requestJson) {
+        // Convertir la solicitud a objeto Protocol para poderlo procesar
+        Gson gson = new Gson();
+        Protocol protocolRequest = gson.fromJson(requestJson, Protocol.class);
+
+        switch (protocolRequest.getResource()) {
+            case "Restaurante":
+                
+                if (protocolRequest.getAction().equals("get")) {
+                    // Consultar un customer
+                    processGetRestaurant(protocolRequest);
+                }
+                
+                if (protocolRequest.getAction().equals("post")) {
+                    // Agregar un customer    
+                    processPostRestaurant(protocolRequest);
+                }
+                break;
+        }
+
+    }
+    
+    /**
+     * Procesa la solicitud de consultar un customer
+     *
+     * @param protocolRequest Protocolo de la solicitud
+     */
+    private void processGetRestaurant(Protocol protocolRequest) {
+        // Extraer la cedula del primer parámetro
+        String id = protocolRequest.getParameters().get(0).getValue();
+        Restaurant customer = service.findRestaurant(Integer.parseInt(id));
+        if (customer == null) {
+            String errorJson = generateNotFoundErrorJson();
+            output.println(errorJson);
+        } else {
+            output.println(objectToJSON(customer));
+        }
+    }
+
+    /**
+     * Procesa la solicitud de agregar un Restaurante
+     *
+     * @param protocolRequest Protocolo de la solicitud
+     */
+    private void processPostRestaurant(Protocol protocolRequest) {
+        
+        Restaurant varRestaurant = new Restaurant();
+        // Reconstruir el customer a partid de lo que viene en los parámetros
+        varRestaurant.setResId(Integer.parseInt((protocolRequest.getParameters().get(0).getValue())));
+        varRestaurant.setAdminId(Integer.parseInt(protocolRequest.getParameters().get(1).getValue()));
+        varRestaurant.setResNom(protocolRequest.getParameters().get(2).getValue());
+        varRestaurant.setResDireccion(protocolRequest.getParameters().get(3).getValue());
+        varRestaurant.setResCiudad(protocolRequest.getParameters().get(4).getValue());
+        varRestaurant.setResTematicaComida(protocolRequest.getParameters().get(5).getValue());
+        String response = service.CreateRestaurant(varRestaurant);
+        output.println(response);
+    }
+    
+    /**
+     * Genera un ErrorJson de cliente no encontrado
+     *
+     * @return error en formato json
+     */
+    private String generateNotFoundErrorJson() {
+        List<JsonError> errors = new ArrayList<>();
+        JsonError error = new JsonError();
+        error.setCode("404");
+        error.setError("NOT_FOUND");
+        error.setMessage("Cliente no encontrado. Cédula no existe");
+        errors.add(error);
+
+        Gson gson = new Gson();
+        String errorsJson = gson.toJson(errors);
+
+        return errorsJson;
     }
 
     /**
@@ -204,16 +257,17 @@ public class JustEatServerSocket implements Runnable {
         input.close();
         socket.close();
     }
-
-    @Override
-    public void run() {
-        try {
-            createStreams();
-            readStream();
-            closeStream();
-
-        } catch (IOException ex) {
-            Logger.getLogger(JustEatServerSocket.class.getName()).log(Level.SEVERE, "Error al leer el flujo", ex);
-        }
+    
+       /**
+     * Convierte el objeto Restaurant a json para que el servidor lo envie como
+     * respuesta por el socket
+     *
+     * @param parRest cliente
+     * @return customer en formato json
+     */
+    private String objectToJSON(Restaurant parRest) {
+        Gson gson = new Gson();
+        String strObject = gson.toJson(parRest);
+        return strObject;
     }
 }

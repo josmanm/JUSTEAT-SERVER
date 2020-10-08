@@ -28,6 +28,55 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
     public RestaurantRepositoryImplMysql() {
 
     }
+    
+     @Override
+    public Restaurant findRestaurant(int resId) {
+        Restaurant restaurant = null;
+        this.connect();
+        try {
+            String sql = "SELECT * from Restaurante where id=? ";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, resId + "");
+            ResultSet res = pstmt.executeQuery();
+
+            if (res.next()) {
+                restaurant = new Restaurant();
+                restaurant.setResId(Integer.parseInt(res.getString("restId")));
+                restaurant.setAdminId(Integer.parseInt(res.getString("adminId")));
+                restaurant.setResNom(res.getString("restNombre"));
+                restaurant.setResDireccion(res.getString("restDireccion"));
+                restaurant.setResCiudad(res.getString("restCiudad"));
+                restaurant.setResTematicaComida(res.getString("restTematicaComida"));
+            }
+            pstmt.close();
+            this.disconnect();
+        } catch (SQLException ex) {
+            Logger.getLogger(RestaurantRepositoryImplMysql.class.getName()).log(Level.SEVERE, "Error al consultar el restaurante de la base de datos", ex);
+        }
+        return restaurant;
+    }
+    
+    @Override
+    public String createRestaurant(Restaurant parRestauran) {
+        try {
+            this.connect();
+            String sql = "INSERT INTO Restaurante(RestId,AdminId,RestNombre,RestDireccion,RestCiudad,RestTematicaComida) VALUES (?,?,?,?,?,?)";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, parRestauran.getResId());
+            pstmt.setInt(2, parRestauran.getAdminId());
+            pstmt.setString(3, parRestauran.getResNom());
+            pstmt.setString(4, parRestauran.getResDireccion());
+            pstmt.setString(5, parRestauran.getResCiudad());
+            pstmt.setString(6, parRestauran.getResTematicaComida());
+
+            pstmt.executeUpdate();
+            pstmt.close();
+            this.disconnect();
+        } catch (SQLException ex) {
+            Logger.getLogger(RestaurantRepositoryImplMysql.class.getName()).log(Level.SEVERE, "Error al insertar el registro", ex);
+        }
+        return Integer.toString(parRestauran.getResId());
+    }
 
     /**
      * Permite hacer la conexion con la base de datos
@@ -47,55 +96,6 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
             Logger.getLogger(RestaurantRepositoryImplMysql.class.getName()).log(Level.SEVERE, "Error al consultar Restaurante de la base de datos", ex);
         }
         return -1;
-    }
-
-    @Override
-    public Restaurant findRestaurant(int resId) {
-        Restaurant restaurant = null;
-        this.connect();
-        try {
-            String sql = "SELECT * from Restaurante where id=? ";
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, resId + "");
-            ResultSet res = pstmt.executeQuery();
-
-            if (res.next()) {
-                restaurant = new Restaurant();
-                restaurant.setResId(Integer.parseInt(res.getString("resId")));
-                restaurant.setAdminId(Integer.parseInt(res.getString("adminId")));
-                restaurant.setResNom(res.getString("resNom"));
-                restaurant.setResDireccion(res.getString("resDireccion"));
-                restaurant.setResCiudad(res.getString("resCiudad"));
-                restaurant.setResTematicaComida(res.getString("resTematicaComida"));
-            }
-            pstmt.close();
-            this.disconnect();
-        } catch (SQLException ex) {
-            Logger.getLogger(RestaurantRepositoryImplMysql.class.getName()).log(Level.SEVERE, "Error al consultar el restaurante de la base de datos", ex);
-        }
-        return restaurant;
-    }
-
-    @Override
-    public String createRestaurant(Restaurant parRestauran) {
-        try {
-            this.connect();
-            String sql = "INSERT INTO Restaurante(RestId,AdminId,RestNom,RestDireccion,RestCiudad,RestTematicaComida) VALUES (?,?,?,?,?,?)";
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, parRestauran.getResId());
-            pstmt.setInt(2, parRestauran.getAdminId());
-            pstmt.setString(3, parRestauran.getResNom());
-            pstmt.setString(4, parRestauran.getResDireccion());
-            pstmt.setString(5, parRestauran.getResCiudad());
-            pstmt.setString(6, parRestauran.getResTematicaComida());
-
-            pstmt.executeUpdate();
-            pstmt.close();
-            this.disconnect();
-        } catch (SQLException ex) {
-            Logger.getLogger(RestaurantRepositoryImplMysql.class.getName()).log(Level.SEVERE, "Error al insertar el registro", ex);
-        }
-        return Integer.toString(parRestauran.getResId());
     }
 
     private void disconnect() {
