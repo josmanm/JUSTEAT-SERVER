@@ -60,7 +60,7 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
     public String createRestaurant(Restaurant parRestauran) {
         try {
             this.connect();
-            String sql = "INSERT INTO Restaurante(RestId,AdminId,RestNombre,RestDireccion,RestCiudad,RestTematicaComida) VALUES (?,?,?,?,?,?)";
+            String sql = "INSERT INTO restaurante(RestId,AdminId,RestNombre,RestDireccion,RestCiudad,RestTematicaComida) VALUES (?,?,?,?,?,?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, parRestauran.getResId());
             pstmt.setInt(2, parRestauran.getAdminId());
@@ -68,7 +68,6 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
             pstmt.setString(4, parRestauran.getResDireccion());
             pstmt.setString(5, parRestauran.getResCiudad());
             pstmt.setString(6, parRestauran.getResTematicaComida());
-
             pstmt.executeUpdate();
             pstmt.close();
             this.disconnect();
