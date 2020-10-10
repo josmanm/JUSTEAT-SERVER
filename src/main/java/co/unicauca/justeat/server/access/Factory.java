@@ -43,7 +43,7 @@ public class Factory {
     public IRestauranRepository getRepository() {
         String type = Utilities.loadProperty("restaurant.repository");
         if (type.isEmpty()) {
-            type = "myqsl";
+            type = "mysql";
         }
         IRestauranRepository result = null;
 
