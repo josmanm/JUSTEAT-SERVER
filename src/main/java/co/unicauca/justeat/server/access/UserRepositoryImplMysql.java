@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  *         SANTIAGO CORDOBA
  *         DANIEL MUÑOZ
  */
-public class AdminRepositoryImplMysql implements IAdminRepository {
+public class UserRepositoryImplMysql implements IAdminRepository {
 
     private Connection conn;
 
@@ -25,7 +25,7 @@ public class AdminRepositoryImplMysql implements IAdminRepository {
     public String createAdmin(Admin parAdmin) {
         try {
             this.connect();
-            String sql = "INSERT INTO Administrador(Adminid, AdminNombre, AdminApellido) VALUES (?,?,?)";
+            String sql = "INSERT INTO Usuario(Adminid, AdminNombre, AdminApellido) VALUES (?,?,?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, parAdmin.getAdminid());
             pstmt.setString(2, parAdmin.getAdminNombre());
@@ -66,7 +66,7 @@ public class AdminRepositoryImplMysql implements IAdminRepository {
             conn = DriverManager.getConnection(url, username, pwd);
             return 1;
         } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(AdminRepositoryImplMysql.class.getName()).log(Level.SEVERE, "Error al consultar Administrador en la base de datos", ex);
+            Logger.getLogger(UserRepositoryImplMysql.class.getName()).log(Level.SEVERE, "Error al consultar Administrador en la base de datos", ex);
         }
         return -1;
     }
