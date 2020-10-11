@@ -2,6 +2,7 @@ package co.unicauca.justeat.server.infra;
 
 import co.unicauca.justEat.server.access.Factory;
 import co.unicauca.justeat.commons.domain.Restaurant;
+import co.unicauca.justeat.commons.domain.User;
 import co.unicauca.justeat.commons.infra.JsonError;
 import co.unicauca.justeat.commons.infra.Protocol;
 import co.unicauca.justeat.commons.infra.Utilities;
@@ -189,7 +190,6 @@ public class JustEatServerSocket implements Runnable {
             output.println(objectToJSON(customer));
         }
     }
-
     /**
      * Procesa la solicitud de agregar un Restaurante
      *
@@ -208,7 +208,21 @@ public class JustEatServerSocket implements Runnable {
         String response = service.CreateRestaurant(varRestaurant);
         output.println(response);
     }
-    
+    /**
+     * 
+     * @param protocolRequest 
+     */
+    public void processPostUser(Protocol protocolRequest){
+        User varUser = new User();
+        varUser.setUserName(protocolRequest.getParameters().get(0).getValue());
+        varUser.setUserContrasena(protocolRequest.getParameters().get(1).getValue());
+        varUser.setUserNombre(protocolRequest.getParameters().get(2).getValue());
+        varUser.setUserApellido(protocolRequest.getParameters().get(3).getValue());
+        varUser.setUserCedula(protocolRequest.getParameters().get(4).getValue());
+        varUser.setUserCiudad(protocolRequest.getParameters().get(5).getValue());
+        varUser.setUserDireccion(protocolRequest.getParameters().get(6).getValue());
+        varUser.setUserCelular(protocolRequest.getParameters().get(7).getValue());
+    }
     /**
      * Genera un ErrorJson de cliente no encontrado
      *

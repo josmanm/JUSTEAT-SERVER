@@ -1,10 +1,12 @@
 package co.unicauca.justeat.server.access;
 
-import co.unicauca.justeat.commons.domain.Admin;
+
+import co.unicauca.justeat.commons.domain.User;
 import co.unicauca.justeat.commons.infra.Utilities;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,45 +19,34 @@ import java.util.logging.Logger;
  *         SANTIAGO CORDOBA
  *         DANIEL MUÑOZ
  */
-public class UserRepositoryImplMysql implements IAdminRepository {
+public class UserRepositoryImplMysql implements IUserRepository {
 
     private Connection conn;
 
     @Override
-    public String createAdmin(Admin parAdmin) {
+    public String createUser(User parUser) {
         try {
             this.connect();
-            String sql = "INSERT INTO Usuario(Adminid, AdminNombre, AdminApellido) VALUES (?,?,?)";
+            String sql = "INSERT INTO Usuario(UserName,UserContraseña,UserNombre,UserApellido,UserCedula,UserCiudad,UserDireccion,UserCelular) VALUES (?,?,?,?,?,?,?,?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, parAdmin.getAdminid());
-            pstmt.setString(2, parAdmin.getAdminNombre());
-            pstmt.setString(3, parAdmin.getAdminApellido());
+            pstmt.setString(1, parUser.getUserName());
+            pstmt.setString(2, parUser.getUserContrasena());
+            pstmt.setString(3, parUser.getUserNombre());
+            pstmt.setString(4, parUser.getUserApellido());
+            pstmt.setString(5, parUser.getUserCedula());
+              pstmt.setString(6, parUser.getUserCiudad());
+            pstmt.setString(7, parUser.getUserDireccion());
+            pstmt.setString(8, parUser.getUserCelular());
 
             pstmt.executeUpdate();
             pstmt.close();
             this.disconnect();
         } catch (SQLException ex) {
-            Logger.getLogger(IAdminRepository.class.getName()).log(Level.SEVERE, "Error al insertar el registro", ex);
+            Logger.getLogger(IUserRepository.class.getName()).log(Level.SEVERE, "Error al insertar el registro", ex);
         }
-        return Integer.toString(parAdmin.getAdminid());
+        return parUser.getUserName();
     }
 
-    @Override
-    public String updateAdmin() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public String deleteAdmin() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Admin findAdmin() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public int connect() {
         try {
             Class.forName(Utilities.loadProperty("server.db.driver"));
@@ -71,7 +62,7 @@ public class UserRepositoryImplMysql implements IAdminRepository {
         return -1;
     }
 
-    @Override
+
     public void disconnect() {
         try {
             conn.close();
@@ -79,5 +70,36 @@ public class UserRepositoryImplMysql implements IAdminRepository {
             Logger.getLogger(RestaurantRepositoryImplMysql.class.getName()).log(Level.FINER, "Error al cerrar Connection", ex);
         }
     }
+
+    @Override
+    public User findUser(String parUserName) throws Exception {
+             User user = null;
+        this.connect();
+        try {
+            String sql = "SELECT * from Usuario where UserName=? ";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1,parUserName);
+            ResultSet res = pstmt.executeQuery();
+
+            if (res.next()) {
+                user = new User();
+                user.setUserName(res.getString("UserName"));
+                user.setUserContrasena(res.getString("UserContraseña"));
+                user.setUserNombre(res.getString("UserNombre"));
+                user.setUserApellido(res.getString("UserApellido"));
+                user.setUserCedula(res.getString("UserCedula"));
+                user.setUserCiudad(res.getString("UserCiudad"));
+                user.setUserDireccion(res.getString("UserDireccion"));
+                user.setUserCelular(res.getString("UserCelular"));
+            }
+            pstmt.close();
+            this.disconnect();
+        } catch (SQLException ex) {
+            Logger.getLogger(RestaurantRepositoryImplMysql.class.getName()).log(Level.SEVERE, "Error al consultar el Uusuario de la base de datos", ex);
+        }
+        return user;
+    }
+
+
 
 }
