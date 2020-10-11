@@ -31,9 +31,9 @@ public class RestauranRepositoryImplArrays  implements IRestauranRepository{
     }
     
     public void inicializar(){
-        restaurants.add(new Restaurant(100, 999, "Sabroso", "Carrera 40 1-36", "Popayan", "China"));
-        restaurants.add(new Restaurant(101, 998, "Deli", "Carrera 42 1-36", "Popayan", "De mar"));
-        restaurants.add(new Restaurant(102, 997, "La20", "Carrera 403 12-36", "Popayan", "Pollo asado"));
+        restaurants.add(new Restaurant("100", "99", "Sabroso", "Carrera 40 1-36", "Popayan", "China"));
+        restaurants.add(new Restaurant("101", "998", "Deli", "Carrera 42 1-36", "Popayan", "De mar"));
+        restaurants.add(new Restaurant("102", "997", "La20", "Carrera 403 12-36", "Popayan", "Pollo asado"));
     }
     /**
      * 
@@ -41,9 +41,9 @@ public class RestauranRepositoryImplArrays  implements IRestauranRepository{
      * @return 
      */
     @Override
-    public Restaurant findRestaurant(int resId) {
+    public Restaurant findRestaurant(String resId) {
               for (Restaurant restaurant : restaurants) {
-            if (restaurant.getResId()==resId) {
+            if (restaurant.getResId().equals(resId)) {
                 return restaurant;
             }
         }

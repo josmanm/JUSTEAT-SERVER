@@ -181,7 +181,7 @@ public class JustEatServerSocket implements Runnable {
     private void processGetRestaurant(Protocol protocolRequest) {
         // Extraer la cedula del primer parámetro
         String id = protocolRequest.getParameters().get(0).getValue();
-        Restaurant customer = service.findRestaurant(Integer.parseInt(id));
+        Restaurant customer = service.findRestaurant((id));
         if (customer == null) {
             String errorJson = generateNotFoundErrorJson();
             output.println(errorJson);
@@ -199,8 +199,8 @@ public class JustEatServerSocket implements Runnable {
         
         Restaurant varRestaurant = new Restaurant();
         // Reconstruir el customer a partid de lo que viene en los parámetros
-        varRestaurant.setResId(Integer.parseInt((protocolRequest.getParameters().get(0).getValue())));
-        varRestaurant.setAdminId(Integer.parseInt(protocolRequest.getParameters().get(1).getValue()));
+        varRestaurant.setResId(((protocolRequest.getParameters().get(0).getValue())));
+        varRestaurant.setUserName((protocolRequest.getParameters().get(1).getValue()));
         varRestaurant.setResNom(protocolRequest.getParameters().get(2).getValue());
         varRestaurant.setResDireccion(protocolRequest.getParameters().get(3).getValue());
         varRestaurant.setResCiudad(protocolRequest.getParameters().get(4).getValue());

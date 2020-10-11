@@ -26,7 +26,7 @@ public class MenuRepositoryImplMysql implements IMenuRepository {
             this.connect();
             String sql = "INSERT INTO Menu(MenuId, MenuNombre, MenuFechaVisualizacion VALUES (?,?,?)";
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setInt(1, parMenu.getMenuId());
+                pstmt.setString(1, parMenu.getMenuId());
                 pstmt.setString(2, parMenu.getMenuNom());
                 pstmt.setDate(3, (Date) parMenu.getMenuFecVi());
 
@@ -36,7 +36,7 @@ public class MenuRepositoryImplMysql implements IMenuRepository {
         } catch (SQLException ex) {
             Logger.getLogger(IOrderRepository.class.getName()).log(Level.SEVERE, "Error al insertar el registro", ex);
         }
-        return Integer.toString(parMenu.getMenuId());
+        return(parMenu.getMenuId());
     }
 
     @Override

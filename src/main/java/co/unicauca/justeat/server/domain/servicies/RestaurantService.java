@@ -41,7 +41,7 @@ public class RestaurantService {
      * @param parResId
      * @return objeto tipo Restaurante
      */
-    public Restaurant findRestaurant(int parResId) {
+    public Restaurant findRestaurant(String parResId) {
         return repo.findRestaurant(parResId);
     }
 
@@ -54,17 +54,9 @@ public class RestaurantService {
     public String CreateRestaurant(Restaurant parRest) {
         List<JsonError> errors = new ArrayList<>();
         if (parRest.getResCiudad().isEmpty() || parRest.getResNom().isEmpty() || parRest.getResDireccion().isEmpty()
-                || parRest.getResCiudad().isEmpty() || parRest.getResTematicaComida().isEmpty() || Integer.toString(parRest.getResId()).isEmpty()) {
+                || parRest.getResCiudad().isEmpty() || parRest.getResTematicaComida().isEmpty() ) {
             errors.add(new JsonError("400", "BAD_REQUEST", "LA INFORMACION X ES OBLIGATORIA "));
         }
-        if (!Utilities.isNumeric(Integer.toString(parRest.getResId()))) {
-            errors.add(new JsonError("400", "BAD_REQUEST", "El id del restaurante debe contener solo digitos. "));
-        }
-
-        if (!Utilities.isNumeric(Integer.toString(parRest.getAdminId()))) {
-            errors.add(new JsonError("400", "BAD_REQUEST", "El id del administrador debe contener solo digitos. "));
-        }
-        
         if(!errors.isEmpty()){
             Gson gson = new Gson();
             String errorJson = gson.toJson(errors);

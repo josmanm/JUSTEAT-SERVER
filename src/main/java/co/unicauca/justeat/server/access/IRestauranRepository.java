@@ -19,7 +19,7 @@ public interface IRestauranRepository {
      * @param resId id del restaurante
      * @return  objeto de tipo Customer
      */
-     public Restaurant findRestaurant(int resId);
+     public Restaurant findRestaurant(String resId);
     /**
      * Crea un  nuevo restaurante
      * @param parRestauran objeto tipo restaurante
