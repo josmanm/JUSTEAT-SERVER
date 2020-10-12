@@ -21,11 +21,8 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author SANTIAGO MUÑOZ
- *         KEVIN ALARCON
- *         JUAN JOSE LOPEZ
- *         SANTIAGO CORDOBA
- *         DANIEL MUÑOZ
+ * @author SANTIAGO MUÑOZ KEVIN ALARCON JUAN JOSE LOPEZ SANTIAGO CORDOBA DANIEL
+ * MUÑOZ
  */
 public class JustEatServerSocket implements Runnable {
 
@@ -71,7 +68,7 @@ public class JustEatServerSocket implements Runnable {
             throwThread();
         }
     }
-    
+
     /**
      * Lanza el hilo
      */
@@ -102,10 +99,11 @@ public class JustEatServerSocket implements Runnable {
             Logger.getLogger(JustEatServerSocket.class.getName()).log(Level.SEVERE, "Error al abrir un socket", ex);
         }
     }
+
     /**
      * Cuerpo del hilo
      */
-    
+
     @Override
     public void run() {
         try {
@@ -117,7 +115,7 @@ public class JustEatServerSocket implements Runnable {
             Logger.getLogger(JustEatServerSocket.class.getName()).log(Level.SEVERE, "Error al leer el flujo", ex);
         }
     }
-    
+
     /**
      * Crea los flujos con el socket
      *
@@ -127,7 +125,7 @@ public class JustEatServerSocket implements Runnable {
         output = new PrintStream(socket.getOutputStream());
         input = new Scanner(socket.getInputStream());
     }
-    
+
     /**
      * Lee el flujo del socket
      */
@@ -143,7 +141,7 @@ public class JustEatServerSocket implements Runnable {
             output.println(errorJson);
         }
     }
-    
+
     /**
      * Procesar la solicitud que proviene de la aplicación cliente
      *
@@ -159,12 +157,13 @@ public class JustEatServerSocket implements Runnable {
 
         switch (protocolRequest.getResource()) {
             case "Restaurante":
-                
+
                 if (protocolRequest.getAction().equals("get")) {
                     // Consultar un customer
                     processGetRestaurant(protocolRequest);
+                    processGetListRestaurant(protocolRequest);
                 }
-                
+
                 if (protocolRequest.getAction().equals("post")) {
                     // Agregar un customer    
                     processPostRestaurant(protocolRequest);
@@ -173,7 +172,7 @@ public class JustEatServerSocket implements Runnable {
         }
 
     }
-    
+
     /**
      * Procesa la solicitud de consultar un customer
      *
@@ -190,13 +189,29 @@ public class JustEatServerSocket implements Runnable {
             output.println(objectToJSON(customer));
         }
     }
+
+    /**
+     * Procesa la solicitud para consultar todos los restaurantes. 
+     * @param protocolRequest 
+     */
+    private void processGetListRestaurant(Protocol protocolRequest) {
+        List<Restaurant> listaRestaurant = service.ListRestaurant();
+        if (!listaRestaurant.isEmpty()) {
+            output.println(ArrayToJSON(listaRestaurant));
+        } else {
+            String errorJson = generateNotFoundErrorJson();
+            output.println(errorJson);
+        }
+
+    }
+
     /**
      * Procesa la solicitud de agregar un Restaurante
      *
      * @param protocolRequest Protocolo de la solicitud
      */
     private void processPostRestaurant(Protocol protocolRequest) {
-        
+
         Restaurant varRestaurant = new Restaurant();
         // Reconstruir el customer a partid de lo que viene en los parámetros
         varRestaurant.setResId(((protocolRequest.getParameters().get(0).getValue())));
@@ -208,11 +223,12 @@ public class JustEatServerSocket implements Runnable {
         String response = service.CreateRestaurant(varRestaurant);
         output.println(response);
     }
+
     /**
-     * 
-     * @param protocolRequest 
+     *
+     * @param protocolRequest
      */
-    public void processPostUser(Protocol protocolRequest){
+    public void processPostUser(Protocol protocolRequest) {
         User varUser = new User();
         varUser.setUserName(protocolRequest.getParameters().get(0).getValue());
         varUser.setUserContrasena(protocolRequest.getParameters().get(1).getValue());
@@ -223,6 +239,7 @@ public class JustEatServerSocket implements Runnable {
         varUser.setUserDireccion(protocolRequest.getParameters().get(6).getValue());
         varUser.setUserCelular(protocolRequest.getParameters().get(7).getValue());
     }
+
     /**
      * Genera un ErrorJson de cliente no encontrado
      *
@@ -271,8 +288,8 @@ public class JustEatServerSocket implements Runnable {
         input.close();
         socket.close();
     }
-    
-       /**
+
+    /**
      * Convierte el objeto Restaurant a json para que el servidor lo envie como
      * respuesta por el socket
      *
@@ -282,6 +299,18 @@ public class JustEatServerSocket implements Runnable {
     private String objectToJSON(Restaurant parRest) {
         Gson gson = new Gson();
         String strObject = gson.toJson(parRest);
+        return strObject;
+    }
+
+    /**
+     * Convierte Una lista de Restaurante a json para que el servidor lo envie como 
+     * respuesta al socket.
+     * @param parLista
+     * @return 
+     */
+    private String ArrayToJSON(List<Restaurant> parLista) {
+        Gson gson = new Gson();
+        String strObject = gson.toJson(parLista);
         return strObject;
     }
 }

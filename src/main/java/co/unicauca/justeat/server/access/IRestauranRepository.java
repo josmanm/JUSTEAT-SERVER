@@ -2,6 +2,7 @@
 package co.unicauca.justeat.server.access;
 
 import co.unicauca.justeat.commons.domain.Restaurant;
+import java.util.List;
 
 
 
@@ -26,6 +27,8 @@ public interface IRestauranRepository {
      * @return 
      */
     public String createRestaurant(Restaurant parRestauran);
+    
+    public List<Restaurant> findAllRestaurant();
     
     public String deleteRestaurant();
     public String updateRestaurant();

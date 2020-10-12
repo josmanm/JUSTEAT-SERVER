@@ -10,11 +10,8 @@ import java.util.List;
 
 /**
  *
- * @author SANTIAGO MUÑOZ
- *         KEVIN ALARCON
- *         JUAN JOSE LOPEZ
- *         SANTIAGO CORDOBA
- *         DANIEL MUÑOZ
+ * @author SANTIAGO MUÑOZ KEVIN ALARCON JUAN JOSE LOPEZ SANTIAGO CORDOBA DANIEL
+ * MUÑOZ
  */
 public class RestaurantService {
 
@@ -54,16 +51,26 @@ public class RestaurantService {
     public String CreateRestaurant(Restaurant parRest) {
         List<JsonError> errors = new ArrayList<>();
         if (parRest.getResCiudad().isEmpty() || parRest.getResNom().isEmpty() || parRest.getResDireccion().isEmpty()
-                || parRest.getResCiudad().isEmpty() || parRest.getResTematicaComida().isEmpty() ) {
+                || parRest.getResCiudad().isEmpty() || parRest.getResTematicaComida().isEmpty()) {
             errors.add(new JsonError("400", "BAD_REQUEST", "LA INFORMACION X ES OBLIGATORIA "));
         }
-        if(!errors.isEmpty()){
+        if (!errors.isEmpty()) {
             Gson gson = new Gson();
             String errorJson = gson.toJson(errors);
             return errorJson;
         }
 
-        return repo.createRestaurant(parRest); 
+        return repo.createRestaurant(parRest);
+    }
+
+    public List<Restaurant> ListRestaurant() {
+        List<JsonError> errors = new ArrayList<>();
+        if (!repo.findAllRestaurant().isEmpty()) {
+            if (!errors.isEmpty()) {
+                errors.add(new JsonError("400", "BAD_REQUEST", "ERROR AL GENERAR PEDIDO SQL"));
+            }
+        }
+        return repo.findAllRestaurant();        
     }
 
 }
