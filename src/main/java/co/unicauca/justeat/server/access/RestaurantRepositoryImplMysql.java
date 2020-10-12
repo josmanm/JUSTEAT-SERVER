@@ -7,16 +7,15 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  *
- * @author SANTIAGO MUÑOZ
- *         KEVIN ALARCON
- *         JUAN JOSE LOPEZ
- *         SANTIAGO CORDOBA
- *         DANIEL MUÑOZ
+ * @author SANTIAGO MUÑOZ KEVIN ALARCON JUAN JOSE LOPEZ SANTIAGO CORDOBA DANIEL
+ * MUÑOZ
  */
 public class RestaurantRepositoryImplMysql implements IRestauranRepository {
 
@@ -27,7 +26,8 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
 
     public RestaurantRepositoryImplMysql() {
 
-    } 
+    }
+
     @Override
     public String createRestaurant(Restaurant parRestauran) {
         try {
@@ -89,7 +89,7 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
 
     @Override
     public Restaurant findRestaurant(String resId) {
-              Restaurant restaurant = null;
+        Restaurant restaurant = null;
         this.connect();
         try {
             String sql = "SELECT * from Restaurante where id=? ";
@@ -113,4 +113,33 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
         }
         return restaurant;
     }
+
+    @Override
+    public List<Restaurant> findAllRestaurant() {
+        List<Restaurant> objList = new ArrayList<>();
+        this.connect();
+        try {
+            String sql = "SELECT * from Restaurante";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                ResultSet res = pstmt.executeQuery();
+                
+                while (res.next()) {
+                    Restaurant objRestaurant = new Restaurant();
+                    objRestaurant.setResId(res.getString("restId"));
+                    objRestaurant.setUserName(res.getString("UserName"));
+                    objRestaurant.setResNom(res.getString("restNombre"));
+                    objRestaurant.setResDireccion(res.getString("restDireccion"));
+                    objRestaurant.setResCiudad(res.getString("restCiudad"));
+                    objRestaurant.setResTematicaComida(res.getString("restTematicaComida"));
+                    
+                    objList.add(objRestaurant);
+                }
+            }
+            this.disconnect();
+        } catch (SQLException ex) {
+            Logger.getLogger(RestaurantRepositoryImplMysql.class.getName()).log(Level.SEVERE, "Error al consultar el restaurante de la base de datos", ex);
+        }
+        return objList;
+    }
+
 }
