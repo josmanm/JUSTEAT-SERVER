@@ -209,9 +209,7 @@ public class UserServerSocket implements Runnable {
         String response = service.CreateUser(varUser);
         output.print(response);
     }
-    
-
-    
+        
     /**
      * Genera un ErrorJson de cliente no encontrado
      *

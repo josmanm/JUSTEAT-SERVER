@@ -2,6 +2,7 @@ package co.unicauca.justeat.server.infra;
 
 import co.unicauca.justEat.server.access.Factory;
 import co.unicauca.justeat.commons.domain.Restaurant;
+import co.unicauca.justeat.commons.domain.User;
 import co.unicauca.justeat.commons.infra.JsonError;
 import co.unicauca.justeat.commons.infra.Protocol;
 import co.unicauca.justeat.commons.infra.Utilities;
@@ -20,11 +21,8 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author SANTIAGO MUÑOZ
- *         KEVIN ALARCON
- *         JUAN JOSE LOPEZ
- *         SANTIAGO CORDOBA
- *         DANIEL MUÑOZ
+ * @author SANTIAGO MUÑOZ KEVIN ALARCON JUAN JOSE LOPEZ SANTIAGO CORDOBA DANIEL
+ * MUÑOZ
  */
 public class RestaurantServerSocket implements Runnable {
 
@@ -57,8 +55,8 @@ public class RestaurantServerSocket implements Runnable {
         // Se hace la inyección de dependencia
         IRestauranRepository repository = Factory.getInstance().getRepository();
         service = new RestaurantService(repository);
-        
     }
+
     /**
      * Arranca el servidor y hace la estructura completa
      */
@@ -70,7 +68,7 @@ public class RestaurantServerSocket implements Runnable {
             throwThread();
         }
     }
-    
+
     /**
      * Lanza el hilo
      */
@@ -101,10 +99,11 @@ public class RestaurantServerSocket implements Runnable {
             Logger.getLogger(RestaurantServerSocket.class.getName()).log(Level.SEVERE, "Error al abrir un socket", ex);
         }
     }
+
     /**
      * Cuerpo del hilo
      */
-    
+
     @Override
     public void run() {
         try {
@@ -114,9 +113,9 @@ public class RestaurantServerSocket implements Runnable {
 
         } catch (IOException ex) {
             Logger.getLogger(RestaurantServerSocket.class.getName()).log(Level.SEVERE, "Error al leer el flujo", ex);
-        } 
+        }
     }
-    
+
     /**
      * Crea los flujos con el socket
      *
@@ -126,11 +125,11 @@ public class RestaurantServerSocket implements Runnable {
         output = new PrintStream(socket.getOutputStream());
         input = new Scanner(socket.getInputStream());
     }
-    
+
     /**
      * Lee el flujo del socket
      */
-    private void readStream(){
+    private void readStream() {
         if (input.hasNextLine()) {
             // Extrae el flujo que envió la aplicación cliente
             String request = input.nextLine();
@@ -142,7 +141,7 @@ public class RestaurantServerSocket implements Runnable {
             output.println(errorJson);
         }
     }
-    
+
     /**
      * Procesar la solicitud que proviene de la aplicación cliente
      *
@@ -151,27 +150,29 @@ public class RestaurantServerSocket implements Runnable {
      * "{"resource":"customer","action":"get","parameters":[{"name":"id","value":"1"}]}"
      *
      */
-    private void processRequest(String requestJson){
+    private void processRequest(String requestJson) {
         // Convertir la solicitud a objeto Protocol para poderlo procesar
         Gson gson = new Gson();
         Protocol protocolRequest = gson.fromJson(requestJson, Protocol.class);
 
         switch (protocolRequest.getResource()) {
             case "Restaurante":
-                
+
                 if (protocolRequest.getAction().equals("get")) {
-                    // Consultar un restaurant
+                    // Consultar un customer
                     processGetRestaurant(protocolRequest);
+                    processGetListRestaurant(protocolRequest);
                 }
-                
+
                 if (protocolRequest.getAction().equals("post")) {
-                    // Agregar un restaurant    
+                    // Agregar un customer    
                     processPostRestaurant(protocolRequest);
                 }
                 break;
         }
+
     }
-    
+
     /**
      * Procesa la solicitud de consultar un customer
      *
@@ -188,13 +189,29 @@ public class RestaurantServerSocket implements Runnable {
             output.println(objectToJSON(customer));
         }
     }
+
+    /**
+     * Procesa la solicitud para consultar todos los restaurantes. 
+     * @param protocolRequest 
+     */
+    private void processGetListRestaurant(Protocol protocolRequest) {
+        List<Restaurant> listaRestaurant = service.ListRestaurant();
+        if (!listaRestaurant.isEmpty()) {
+            output.println(ArrayToJSON(listaRestaurant));
+        } else {
+            String errorJson = generateNotFoundErrorJson();
+            output.println(errorJson);
+        }
+
+    }
+
     /**
      * Procesa la solicitud de agregar un Restaurante
      *
      * @param protocolRequest Protocolo de la solicitud
      */
     private void processPostRestaurant(Protocol protocolRequest) {
-        
+
         Restaurant varRestaurant = new Restaurant();
         // Reconstruir el customer a partid de lo que viene en los parámetros
         varRestaurant.setResId(((protocolRequest.getParameters().get(0).getValue())));
@@ -206,8 +223,28 @@ public class RestaurantServerSocket implements Runnable {
         String response = service.CreateRestaurant(varRestaurant);
         output.println(response);
     }
-    
 
+    /**
+     *
+     * @param protocolRequest
+     */
+    public void processPostUser(Protocol protocolRequest) {
+        User varUser = new User();
+        varUser.setUserName(protocolRequest.getParameters().get(0).getValue());
+        varUser.setUserContrasena(protocolRequest.getParameters().get(1).getValue());
+        varUser.setUserNombre(protocolRequest.getParameters().get(2).getValue());
+        varUser.setUserApellido(protocolRequest.getParameters().get(3).getValue());
+        varUser.setUserCedula(protocolRequest.getParameters().get(4).getValue());
+        varUser.setUserCiudad(protocolRequest.getParameters().get(5).getValue());
+        varUser.setUserDireccion(protocolRequest.getParameters().get(6).getValue());
+        varUser.setUserCelular(protocolRequest.getParameters().get(7).getValue());
+    }
+
+    /**
+     * Genera un ErrorJson de cliente no encontrado
+     *
+     * @return error en formato json
+     */
     private String generateNotFoundErrorJson() {
         List<JsonError> errors = new ArrayList<>();
         JsonError error = new JsonError();
@@ -251,8 +288,8 @@ public class RestaurantServerSocket implements Runnable {
         input.close();
         socket.close();
     }
-    
-       /**
+
+    /**
      * Convierte el objeto Restaurant a json para que el servidor lo envie como
      * respuesta por el socket
      *
@@ -264,5 +301,16 @@ public class RestaurantServerSocket implements Runnable {
         String strObject = gson.toJson(parRest);
         return strObject;
     }
-   
+
+    /**
+     * Convierte Una lista de Restaurante a json para que el servidor lo envie como 
+     * respuesta al socket.
+     * @param parLista
+     * @return 
+     */
+    private String ArrayToJSON(List<Restaurant> parLista) {
+        Gson gson = new Gson();
+        String strObject = gson.toJson(parLista);
+        return strObject;
+    }
 }
