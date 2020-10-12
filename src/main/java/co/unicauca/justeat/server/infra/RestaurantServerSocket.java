@@ -24,7 +24,7 @@ import java.util.logging.Logger;
  * @author SANTIAGO MUÑOZ KEVIN ALARCON JUAN JOSE LOPEZ SANTIAGO CORDOBA DANIEL
  * MUÑOZ
  */
-public class JustEatServerSocket implements Runnable {
+public class RestaurantServerSocket implements Runnable {
 
     /**
      * private fin Servicio de clientes
@@ -51,7 +51,7 @@ public class JustEatServerSocket implements Runnable {
      */
     private static final int PORT = Integer.parseInt(Utilities.loadProperty("server.port"));
 
-    public JustEatServerSocket() {
+    public RestaurantServerSocket() {
         // Se hace la inyección de dependencia
         IRestauranRepository repository = Factory.getInstance().getRepository();
         service = new RestaurantService(repository);
@@ -73,7 +73,7 @@ public class JustEatServerSocket implements Runnable {
      * Lanza el hilo
      */
     private static void throwThread() {
-        new Thread(new JustEatServerSocket()).start();
+        new Thread(new RestaurantServerSocket()).start();
     }
 
     /**
@@ -84,7 +84,7 @@ public class JustEatServerSocket implements Runnable {
             ssock = new ServerSocket(PORT);
             Logger.getLogger("Server").log(Level.INFO, "Servidor iniciado, escuchando por el puerto {0}", PORT);
         } catch (IOException ex) {
-            Logger.getLogger(JustEatServerSocket.class.getName()).log(Level.SEVERE, "Error del server socket al abrir el puerto", ex);
+            Logger.getLogger(RestaurantServerSocket.class.getName()).log(Level.SEVERE, "Error del server socket al abrir el puerto", ex);
         }
     }
 
@@ -96,7 +96,7 @@ public class JustEatServerSocket implements Runnable {
             socket = ssock.accept();
             Logger.getLogger("Socket").log(Level.INFO, "Socket conectado");
         } catch (IOException ex) {
-            Logger.getLogger(JustEatServerSocket.class.getName()).log(Level.SEVERE, "Error al abrir un socket", ex);
+            Logger.getLogger(RestaurantServerSocket.class.getName()).log(Level.SEVERE, "Error al abrir un socket", ex);
         }
     }
 
@@ -112,7 +112,7 @@ public class JustEatServerSocket implements Runnable {
             closeStream();
 
         } catch (IOException ex) {
-            Logger.getLogger(JustEatServerSocket.class.getName()).log(Level.SEVERE, "Error al leer el flujo", ex);
+            Logger.getLogger(RestaurantServerSocket.class.getName()).log(Level.SEVERE, "Error al leer el flujo", ex);
         }
     }
 
