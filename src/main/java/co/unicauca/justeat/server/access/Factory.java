@@ -2,6 +2,7 @@ package co.unicauca.justEat.server.access;
 
 import co.unicauca.justeat.commons.infra.Utilities;
 import co.unicauca.justeat.server.access.IRestauranRepository;
+import co.unicauca.justeat.server.access.IUserRepository;
 import co.unicauca.justeat.server.access.RestauranRepositoryImplArrays;
 import co.unicauca.justeat.server.access.RestaurantRepositoryImplMysql;
 
@@ -53,6 +54,21 @@ public class Factory {
                 break;
             case "mysql":
                 result = new RestaurantRepositoryImplMysql();
+                break;
+        }
+        return result;
+    }
+    
+    public IUserRepository getRepositoryUser(){
+        String type = Utilities.loadProperty("restaurant.repository");
+        if (type.isEmpty()) {
+            type = "mysql";
+        }
+        IUserRepository result = null;
+
+        switch (type) {
+            case "mysql":
+                result = new UserRepositoryImplMysql();
                 break;
         }
         return result;

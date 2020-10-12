@@ -72,7 +72,7 @@ public class UserRepositoryImplMysql implements IUserRepository {
     }
 
     @Override
-    public User findUser(String parUserName) throws Exception {
+    public User findUser(String parUserName){
              User user = null;
         this.connect();
         try {

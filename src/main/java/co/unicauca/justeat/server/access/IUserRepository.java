@@ -18,7 +18,7 @@ public interface IUserRepository {
      * @return Objeto restaurant
      * @throws Exception 
      */
-    public User findUser(String id) throws Exception;
+    public User findUser(String id);
     
     /**
      * Crea un Usario
@@ -27,5 +27,5 @@ public interface IUserRepository {
      * @throws Exception 
      */
     
-    public String createUser(User user) throws Exception;
+    public String createUser(User user);
 }

@@ -42,7 +42,7 @@ public class UserService {
      * @return objeto tipo Restaurante
      * @throws java.lang.Exception
      */
-    public User findRestaurant(String parUserName) throws Exception {
+    public User findUser(String parUserName){
         return repo.findUser(parUserName);
     }
 
@@ -53,7 +53,7 @@ public class UserService {
      * @return
      * @throws java.lang.Exception
      */
-    public String CreateRestaurant(User parUserName) throws Exception {
+    public String CreateUser(User parUserName){
         List<JsonError> errors = new ArrayList<>();
         if (parUserName.getUserName().isEmpty() || parUserName.getUserNombre().isEmpty() || parUserName.getUserApellido().isEmpty()
                 || parUserName.getUserContrasena().isEmpty() || parUserName.getUserCedula().isEmpty()) {
