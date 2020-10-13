@@ -28,27 +28,6 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
 
     }
 
-    @Override
-    public String createRestaurant(Restaurant parRestauran) {
-        try {
-            this.connect();
-            String sql = "INSERT INTO restaurante(RestId,UserName,RestNombre,RestDireccion,RestCiudad,RestTematicaComida) VALUES (?,?,?,?,?,?)";
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, parRestauran.getResId());
-            pstmt.setString(2, parRestauran.getUserName());
-            pstmt.setString(3, parRestauran.getResNom());
-            pstmt.setString(4, parRestauran.getResDireccion());
-            pstmt.setString(5, parRestauran.getResCiudad());
-            pstmt.setString(6, parRestauran.getResTematicaComida());
-            pstmt.executeUpdate();
-            pstmt.close();
-            this.disconnect();
-        } catch (SQLException ex) {
-            Logger.getLogger(RestaurantRepositoryImplMysql.class.getName()).log(Level.SEVERE, "Error al insertar el registro", ex);
-        }
-        return (parRestauran.getResId());
-    }
-
     /**
      * Permite hacer la conexion con la base de datos
      *
@@ -86,17 +65,37 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
     public String updateRestaurant() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    @Override
+    public String createRestaurant(Restaurant parRestauran) {
+        try {
+            this.connect();
+            String sql = "INSERT INTO restaurante(RestId,UserName,RestNombre,RestDireccion,RestCiudad,RestTematicaComida) VALUES (?,?,?,?,?,?)";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, parRestauran.getResId());
+            pstmt.setString(2, parRestauran.getUserName());
+            pstmt.setString(3, parRestauran.getResNom());
+            pstmt.setString(4, parRestauran.getResDireccion());
+            pstmt.setString(5, parRestauran.getResCiudad());
+            pstmt.setString(6, parRestauran.getResTematicaComida());
+            pstmt.executeUpdate();
+            pstmt.close();
+            this.disconnect();
+        } catch (SQLException ex) {
+            Logger.getLogger(RestaurantRepositoryImplMysql.class.getName()).log(Level.SEVERE, "Error al insertar el registro", ex);
+        }
+        return (parRestauran.getResId());
+    }
 
     @Override
     public Restaurant findRestaurant(String resId) {
         Restaurant restaurant = null;
-        this.connect();
         try {
-            String sql = "SELECT * from Restaurante where id=? ";
+            this.connect();
+            String sql = "SELECT * from Restaurante where RestNombre=? ";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, resId + "");
+            pstmt.setString(1, resId );
             ResultSet res = pstmt.executeQuery();
-
             if (res.next()) {
                 restaurant = new Restaurant();
                 restaurant.setResId(res.getString("restId"));

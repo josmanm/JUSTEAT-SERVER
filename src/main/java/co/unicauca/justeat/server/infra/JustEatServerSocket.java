@@ -1,5 +1,9 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package co.unicauca.justeat.server.infra;
-
 import co.unicauca.justEat.server.access.Factory;
 import co.unicauca.justeat.commons.domain.Restaurant;
 import co.unicauca.justeat.commons.domain.User;
@@ -7,7 +11,9 @@ import co.unicauca.justeat.commons.infra.JsonError;
 import co.unicauca.justeat.commons.infra.Protocol;
 import co.unicauca.justeat.commons.infra.Utilities;
 import co.unicauca.justeat.server.access.IRestauranRepository;
+import co.unicauca.justeat.server.access.IUserRepository;
 import co.unicauca.justeat.server.domain.servicies.RestaurantService;
+import co.unicauca.justeat.server.domain.servicies.UserService;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -19,25 +25,28 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author SANTIAGO MUÑOZ KEVIN ALARCON JUAN JOSE LOPEZ SANTIAGO CORDOBA DANIEL
- * MUÑOZ
- */
-public class RestaurantServerSocket implements Runnable {
 
-    /**
+
+
+public class JustEatServerSocket implements Runnable{
+       /**
      * private fin Servicio de clientes
      */
     private final RestaurantService service;
+    
+    private final UserService service2;
     /**
      * Server Socket, la orejita
      */
     private static ServerSocket ssock;
+    
+        private static ServerSocket ssock2;
     /**
      * Socket por donde se hace la petición/respuesta
      */
     private static Socket socket;
+    
+    private static Socket socket2;
     /**
      * Permite leer un flujo de datos del socket
      */
@@ -50,56 +59,62 @@ public class RestaurantServerSocket implements Runnable {
      * Puerto por donde escucha el server socket
      */
     private static final int PORT = Integer.parseInt(Utilities.loadProperty("server.port"));
+    
+    private static final int PORT2 = Integer.parseInt(Utilities.loadProperty("server.port2"));
 
-    public RestaurantServerSocket() {
+    public JustEatServerSocket() {
         // Se hace la inyección de dependencia
         IRestauranRepository repository = Factory.getInstance().getRepository();
         service = new RestaurantService(repository);
+        
+        IUserRepository repository1 =Factory.getInstance().getRepositoryUser();
+        service2= new UserService(repository1);
     }
-
-    /**
-     * Arranca el servidor y hace la estructura completa
-     */
-    public void start() {
+    
+       public void start() {  
         openPort();
-
         while (true) {
+            
             waitToClient();
             throwThread();
         }
     }
-
-    /**
+     /**
      * Lanza el hilo
      */
     private static void throwThread() {
-        new Thread(new RestaurantServerSocket()).start();
+        new Thread(new JustEatServerSocket()).start();
     }
-
-    /**
+    
+       /**
      * Instancia el server socket y abre el puerto respectivo
      */
     private static void openPort() {
         try {
             ssock = new ServerSocket(PORT);
+           // ssock2 = new ServerSocket(PORT2);
             Logger.getLogger("Server").log(Level.INFO, "Servidor iniciado, escuchando por el puerto {0}", PORT);
+            // Logger.getLogger("Server").log(Level.INFO, "Servidor iniciado, escuchando por el puerto {0}", PORT2);
         } catch (IOException ex) {
-            Logger.getLogger(RestaurantServerSocket.class.getName()).log(Level.SEVERE, "Error del server socket al abrir el puerto", ex);
+            Logger.getLogger(JustEatServerSocket.class.getName()).log(Level.SEVERE, "Error del server socket al abrir el puerto", ex);
         }
     }
-
+   
+    
     /**
      * Espera que el cliente se conecta y le devuelve un socket
      */
     private static void waitToClient() {
         try {
             socket = ssock.accept();
+           // socket2 = ssock2.accept();
             Logger.getLogger("Socket").log(Level.INFO, "Socket conectado");
         } catch (IOException ex) {
-            Logger.getLogger(RestaurantServerSocket.class.getName()).log(Level.SEVERE, "Error al abrir un socket", ex);
+            Logger.getLogger(JustEatServerSocket.class.getName()).log(Level.SEVERE, "Error al abrir un socket", ex);
         }
     }
-
+    
+    
     /**
      * Cuerpo del hilo
      */
@@ -112,10 +127,11 @@ public class RestaurantServerSocket implements Runnable {
             closeStream();
 
         } catch (IOException ex) {
-            Logger.getLogger(RestaurantServerSocket.class.getName()).log(Level.SEVERE, "Error al leer el flujo", ex);
+            Logger.getLogger(JustEatServerSocket.class.getName()).log(Level.SEVERE, "Error al leer el flujo", ex);
         }
     }
-
+    
+    
     /**
      * Crea los flujos con el socket
      *
@@ -125,8 +141,8 @@ public class RestaurantServerSocket implements Runnable {
         output = new PrintStream(socket.getOutputStream());
         input = new Scanner(socket.getInputStream());
     }
-
-    /**
+    
+     /**
      * Lee el flujo del socket
      */
     private void readStream() {
@@ -141,8 +157,8 @@ public class RestaurantServerSocket implements Runnable {
             output.println(errorJson);
         }
     }
-
-    /**
+    
+      /**
      * Procesar la solicitud que proviene de la aplicación cliente
      *
      * @param requestJson petición que proviene del cliente socket en formato
@@ -161,7 +177,6 @@ public class RestaurantServerSocket implements Runnable {
                 if (protocolRequest.getAction().equals("get")) {
                     // Consultar un customer
                     processGetRestaurant(protocolRequest);
-                    processGetListRestaurant(protocolRequest);
                 }
 
                 if (protocolRequest.getAction().equals("post")) {
@@ -169,10 +184,23 @@ public class RestaurantServerSocket implements Runnable {
                     processPostRestaurant(protocolRequest);
                 }
                 break;
+              case "Usuario":
+
+                if (protocolRequest.getAction().equals("get")) {
+                    // Consultar un customer
+                    processGetUser(protocolRequest);
+                   // processGetListRestaurant(protocolRequest);
+                }
+                if (protocolRequest.getAction().equals("post")) {
+                    // Agregar un customer    
+                    processPostUser(protocolRequest);
+                }    
+                break;
         }
 
     }
-
+    
+    
     /**
      * Procesa la solicitud de consultar un customer
      *
@@ -186,9 +214,27 @@ public class RestaurantServerSocket implements Runnable {
             String errorJson = generateNotFoundErrorJson();
             output.println(errorJson);
         } else {
-            output.println(objectToJSON(customer));
+            output.println(objectToJSONRestaurant(customer));
         }
     }
+        
+    /**
+     * Procesa la solicitud de consultar un user
+     *
+     * @param protocolRequest Protocolo de la solicitud
+     */
+    public void processGetUser(Protocol protocolRequest){
+        // Extraer la cedula del primer parámetro
+        String userName = protocolRequest.getParameters().get(0).getValue();
+        User user = service2.findUser((userName));
+        if (user == null) {
+            String errorJson = generateNotFoundErrorJson();
+            output.println(errorJson);
+        } else {
+            output.println(objectToJSONUser(user));
+        }
+    }
+    
 
     /**
      * Procesa la solicitud para consultar todos los restaurantes. 
@@ -238,6 +284,8 @@ public class RestaurantServerSocket implements Runnable {
         varUser.setUserCiudad(protocolRequest.getParameters().get(5).getValue());
         varUser.setUserDireccion(protocolRequest.getParameters().get(6).getValue());
         varUser.setUserCelular(protocolRequest.getParameters().get(7).getValue());
+        String response =service2.CreateUser(varUser);
+        output.print(response);
     }
 
     /**
@@ -296,9 +344,15 @@ public class RestaurantServerSocket implements Runnable {
      * @param parRest cliente
      * @return customer en formato json
      */
-    private String objectToJSON(Restaurant parRest) {
+    private String objectToJSONRestaurant(Restaurant parRest) {
         Gson gson = new Gson();
         String strObject = gson.toJson(parRest);
+        return strObject;
+    }
+    
+    private String objectToJSONUser(User parUser) {
+        Gson gson = new Gson();
+        String strObject = gson.toJson(parUser);
         return strObject;
     }
 
@@ -313,4 +367,5 @@ public class RestaurantServerSocket implements Runnable {
         String strObject = gson.toJson(parLista);
         return strObject;
     }
+
 }

@@ -1,6 +1,6 @@
 package co.unicauca.justeat.server.app;
 
-import co.unicauca.justeat.server.infra.RestaurantServerSocket;
+import co.unicauca.justeat.server.infra.JustEatServerSocket;
 
 
 /**
@@ -12,8 +12,11 @@ import co.unicauca.justeat.server.infra.RestaurantServerSocket;
  *         DANIEL MUÑOZ
  */
 public class JustEatApplication {
-        public static void main(String args[]){
-        RestaurantServerSocket server = new RestaurantServerSocket();
+    
+        public static void main(String args[]){      
+        JustEatServerSocket server = new JustEatServerSocket();
         server.start();
     }
+        
+        
 }

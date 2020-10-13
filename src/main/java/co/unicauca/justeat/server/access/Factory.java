@@ -5,6 +5,7 @@ import co.unicauca.justeat.server.access.IRestauranRepository;
 import co.unicauca.justeat.server.access.IUserRepository;
 import co.unicauca.justeat.server.access.RestauranRepositoryImplArrays;
 import co.unicauca.justeat.server.access.RestaurantRepositoryImplMysql;
+import co.unicauca.justeat.server.access.UserRepositoryImplMysql;
 
 /**
  *
