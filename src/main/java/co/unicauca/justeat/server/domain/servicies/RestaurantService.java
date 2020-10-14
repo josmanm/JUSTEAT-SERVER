@@ -2,7 +2,6 @@ package co.unicauca.justeat.server.domain.servicies;
 
 import co.unicauca.justeat.commons.domain.Restaurant;
 import co.unicauca.justeat.commons.infra.JsonError;
-import co.unicauca.justeat.commons.infra.Utilities;
 import co.unicauca.justeat.server.access.IRestauranRepository;
 import com.google.gson.Gson;
 import java.util.ArrayList;
@@ -10,32 +9,36 @@ import java.util.List;
 
 /**
  *
- * @author SANTIAGO MUÑOZ KEVIN ALARCON JUAN JOSE LOPEZ SANTIAGO CORDOBA DANIEL
+ * @author SANTIAGO MUÑOZ, KEVIN ALARCON, JUAN LOPEZ, SANTIAGO CORDOBA, DANIEL
  * MUÑOZ
  */
 public class RestaurantService {
 
     /**
-     * repositorio de Restaurantes
+     * repositorio de Restaurante, Objeto de tipo IRestauranRepository.
      */
     IRestauranRepository repo;
 
+    /**
+     * Constructor por defecto.
+     */
     public RestaurantService() {
     }
 
     /**
-     * Constructor parametrizado. Hace inyeccion de dependencias
+     * Constructor parametrizado, Hace inyeccion de dependencias.
      *
-     * @param repo repositorio de tipo ICustomerRepository
+     * @param repo repositorio de tipo IRestaurantRepository.
      */
     public RestaurantService(IRestauranRepository repo) {
         this.repo = repo;
     }
 
     /**
-     * Buscar un Restaurante
+     * Metodo encargado buscar un restaurante usando la interfaz
+     * IRestaurantRepository.
      *
-     * @param parResId
+     * @param parResId cadena de texto con la cual se buscara un restaurante.
      * @return objeto tipo Restaurante
      */
     public Restaurant findRestaurant(String parResId) {
@@ -43,10 +46,10 @@ public class RestaurantService {
     }
 
     /**
-     * Crea un nuevo customer. Aplica validaciones de negocio
+     * Crea un nuevo restaurante, Aplica validaciones de negocio.
      *
-     * @param parRest
-     * @return
+     * @param parRest Objeto de tipo Restaurant.
+     * @return llamado al metodo createRestaurant.
      */
     public String CreateRestaurant(Restaurant parRest) {
         List<JsonError> errors = new ArrayList<>();
@@ -63,6 +66,10 @@ public class RestaurantService {
         return repo.createRestaurant(parRest);
     }
 
+    /**
+     * Metodo encargado de obtener una lista de todos los restaurantes existentes.
+     * @return llamado a metodo findAllRestaurant.
+     */
     public List<Restaurant> ListRestaurant() {
         List<JsonError> errors = new ArrayList<>();
         if (!repo.findAllRestaurant().isEmpty()) {
@@ -70,7 +77,7 @@ public class RestaurantService {
                 errors.add(new JsonError("400", "BAD_REQUEST", "ERROR AL GENERAR PEDIDO SQL"));
             }
         }
-        return repo.findAllRestaurant();        
+        return repo.findAllRestaurant();
     }
 
 }

@@ -20,18 +20,21 @@ import java.util.logging.Logger;
 public class RestaurantRepositoryImplMysql implements IRestauranRepository {
 
     /**
-     * Coneccion con Mysql
+     * Objeto de tipo Connection, encargado de realizar la Conexion con Mysql.
      */
     public Connection conn;
 
+    /**
+     *Constructor por defecto.
+     */
     public RestaurantRepositoryImplMysql() {
 
     }
 
     /**
-     * Permite hacer la conexion con la base de datos
+     * Metodo que se encarga de realizar la conexion con la base de datos.
      *
-     * @return
+     * @return 1, si la conexion fue exitosa, -1 si la conexion fue fallida.
      */
     public int connect() {
         try {
@@ -48,6 +51,9 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
         return -1;
     }
 
+    /**
+     * Metodo encargado de desconectar la aplicacion de la base de datos.
+     */
     private void disconnect() {
         try {
             conn.close();
@@ -56,16 +62,29 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
         }
     }
 
+    /**
+     * Metodo encargado de Eliminar un Restaurante.
+     * @return 
+     */
     @Override
     public String deleteRestaurant() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Metodo encargado de actualizar la informacion sobre el Restaurante.
+     * @return 
+     */
     @Override
     public String updateRestaurant() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Metodo encargado de crear un restaurante, Este metodo se sobre escribe debido a que es implementado de la interfaz IRestaurantRepository.
+     * @param parRestauran Objeto de tipo Restaurante, Este objeto servira para extraer informacion.
+     * @return retorna un valor de especifico del parametro parRestaurant (ResId).
+     */
     @Override
     public String createRestaurant(Restaurant parRestauran) {
         try {
@@ -87,6 +106,11 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
         return (parRestauran.getResId());
     }
 
+    /**
+     * Metodo encargado de encontrar los restaurantes.
+     * @param resId cadena de texto, sirve para buscar un restaurante especifico.
+     * @return objeto de tipo restaurante, con la informacion de la busqueda.
+     */
     @Override
     public Restaurant findRestaurant(String resId) {
         Restaurant restaurant = null;
@@ -113,16 +137,21 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
         return restaurant;
     }
 
+    
+    /**
+     * Metodo encargado de obtener una lista de todos los restaurantes.
+     * @return Se retorna una lista con los resultados de la busqueda. 
+     */
     @Override
     public List<Restaurant> findAllRestaurant() {
-        List<Restaurant> objList =  new ArrayList<Restaurant>();
+        List<Restaurant> objList = new ArrayList<Restaurant>();
         this.connect();
         Restaurant objRestaurant = new Restaurant();
         try {
             String sql = "SELECT * FROM restaurante;";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet res = pstmt.executeQuery();
-            while (res.next()) { 
+            while (res.next()) {
                 objRestaurant.setResId(res.getString("restId"));
                 objRestaurant.setUserName(res.getString("UserName"));
                 objRestaurant.setResNom(res.getString("restNombre"));
@@ -130,7 +159,7 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
                 objRestaurant.setResCiudad(res.getString("restCiudad"));
                 objRestaurant.setResTematicaComida(res.getString("restTematicaComida"));
                 objList.add(objRestaurant);
-                objRestaurant= new Restaurant();
+                objRestaurant = new Restaurant();
             }
             this.disconnect();
         } catch (SQLException ex) {

@@ -1,31 +1,27 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.unicauca.justeat.server.access;
 
 import co.unicauca.justeat.commons.domain.User;
 
 /**
  *
- * @author SANTIAGO MUÑOZ
+ * @author SANTIAGO MUÑOZ KEVIN ALARCON JUAN JOSE LOPEZ SANTIAGO CORDOBA DANIEL
+ * MUÑOZ
  */
 public interface IUserRepository {
-       /**
-     * Buscar un Usuaaario utlizando un socket
+
+    /**
+     * Metodo encargado de encontrar un usuariot
+     *
      * @param id Id del restaurante
      * @return Objeto restaurant
-     * @throws Exception 
      */
     public User findUser(String id);
-    
+
     /**
-     * Crea un Usario
-     * @param user 
-     * @return
-     * @throws Exception 
+     * Metodo para crear usuarios,
+     *
+     * @param user Objeto de tipo User.
+     * @return cadena de texto con el valor de getUserName.
      */
-    
     public String createUser(User user);
 }

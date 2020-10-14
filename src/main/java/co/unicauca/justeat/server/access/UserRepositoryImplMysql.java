@@ -1,6 +1,5 @@
 package co.unicauca.justeat.server.access;
 
-
 import co.unicauca.justeat.commons.domain.User;
 import co.unicauca.justeat.commons.infra.Utilities;
 import java.sql.Connection;
@@ -13,16 +12,23 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author SANTIAGO MUÑOZ
- *         KEVIN ALARCON
- *         JUAN JOSE LOPEZ
- *         SANTIAGO CORDOBA
- *         DANIEL MUÑOZ
+ * @author SANTIAGO MUÑOZ, KEVIN ALARCON, JUAN LOPEZ, SANTIAGO CORDOBA, DANIEL
+ * MUÑOZ
  */
 public class UserRepositoryImplMysql implements IUserRepository {
 
+    /**
+     * Objeto de tipo Connection.
+     */
     private Connection conn;
 
+    /**
+     * Metodo para crear usuarios, Este metodo se sobre escribe debido a que es
+     * implementado de la interfaz IUserRepository.
+     *
+     * @param parUser Objeto de tipo User.
+     * @return cadena de texto con el valor de getUserName.
+     */
     @Override
     public String createUser(User parUser) {
         try {
@@ -34,7 +40,7 @@ public class UserRepositoryImplMysql implements IUserRepository {
             pstmt.setString(3, parUser.getUserNombre());
             pstmt.setString(4, parUser.getUserApellido());
             pstmt.setString(5, parUser.getUserCedula());
-              pstmt.setString(6, parUser.getUserCiudad());
+            pstmt.setString(6, parUser.getUserCiudad());
             pstmt.setString(7, parUser.getUserDireccion());
             pstmt.setString(8, parUser.getUserCelular());
 
@@ -47,6 +53,11 @@ public class UserRepositoryImplMysql implements IUserRepository {
         return parUser.getUserName();
     }
 
+    /**
+     * Metodo encargado de realizar la conexion con la base de datos.
+     *
+     * @return 1, si la conexion fue exitosa, -1 si la conexion fue fallida.
+     */
     public int connect() {
         try {
             Class.forName(Utilities.loadProperty("server.db.driver"));
@@ -62,7 +73,9 @@ public class UserRepositoryImplMysql implements IUserRepository {
         return -1;
     }
 
-
+    /**
+     * Metodo encargado de desconectar la aplicacion de la base de datos.
+     */
     public void disconnect() {
         try {
             conn.close();
@@ -71,14 +84,21 @@ public class UserRepositoryImplMysql implements IUserRepository {
         }
     }
 
+    /**
+     * Metodo encargado de encontrar un usuario
+     *
+     * @param parUserName cadena de texto, servira para encontrar un usuario
+     * especifico.
+     * @return Objeto de tipo User.
+     */
     @Override
-    public User findUser(String parUserName){
-             User user = null;
+    public User findUser(String parUserName) {
+        User user = null;
         this.connect();
         try {
             String sql = "SELECT * from Usuario where UserName=? ";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1,parUserName);
+            pstmt.setString(1, parUserName);
             ResultSet res = pstmt.executeQuery();
 
             if (res.next()) {
@@ -99,7 +119,5 @@ public class UserRepositoryImplMysql implements IUserRepository {
         }
         return user;
     }
-
-
 
 }
