@@ -20,6 +20,7 @@ public class DishRepositoryImplMysql implements IDishRepository {
      * Objeto de tipo Connection, encargado de realizar la Conexion con Mysql.
      */
     public Connection conn;
+    public Connection conn2;
 
     @Override
     public String createDish(Dish parDish) {
@@ -32,7 +33,16 @@ public class DishRepositoryImplMysql implements IDishRepository {
             pstmt.setString(3, parDish.getPlaDesc());
             pstmt.setDouble(4, parDish.getPlaPrecio());
             pstmt.executeUpdate();
+            String sql2 ="INSERT INTO Tiene (MenuId,PlatoId) VALUES (?,?) ";
+            PreparedStatement pstmt2 = conn2.prepareStatement(sql2);
+            pstmt2.setString(1, "1122");
+            pstmt2.setString(2, parDish.getPlatoId());
+            pstmt2.executeUpdate();
+            
             pstmt.close();
+            pstmt2.close();
+            
+            
             this.disconnect();
         } catch (SQLException ex) {
             Logger.getLogger(RestaurantRepositoryImplMysql.class.getName()).log(Level.SEVERE, "Error al insertar el registro", ex);
@@ -63,6 +73,7 @@ public class DishRepositoryImplMysql implements IDishRepository {
             String username = Utilities.loadProperty("server.db.username");
             String pwd = Utilities.loadProperty("server.db.password");
             conn = DriverManager.getConnection(url, username, pwd);
+            conn2=DriverManager.getConnection(url, username, pwd);
             return 1;
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(RestaurantRepositoryImplMysql.class.getName()).log(Level.SEVERE, "Error al consultar Restaurante de la base de datos", ex);
@@ -75,6 +86,7 @@ public class DishRepositoryImplMysql implements IDishRepository {
      */
     private void disconnect() {
         try {
+            conn.close();
             conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(RestaurantRepositoryImplMysql.class.getName()).log(Level.FINER, "Error al cerrar Connection", ex);

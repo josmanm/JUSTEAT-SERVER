@@ -297,7 +297,7 @@ public class JustEatServerSocket implements Runnable {
 
         objDish.setPlatoId(protocolRequest.getParameters().get(0).getValue());
         objDish.setPlanNom(protocolRequest.getParameters().get(1).getValue());
-        objDish.setPlaDesc(protocolRequest.getParameters().get(2).getValue());
+        objDish.setPlacDesc(protocolRequest.getParameters().get(2).getValue());
         objDish.setPlaPrecio(Double.parseDouble(protocolRequest.getParameters().get(3).getValue()));
         String response = serviceDish.CreateDish(objDish);
         output.println(response);
