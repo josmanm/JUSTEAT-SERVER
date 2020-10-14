@@ -24,7 +24,7 @@ public class Factory {
     /**
      * Clase singleton
      *
-     * @return
+     * @return Instancia de la clase Factory,
      */
     public static Factory getInstance() {
 
@@ -59,6 +59,11 @@ public class Factory {
         return result;
     }
 
+    /**
+     * Método que crea una instancia concreta de la jerarquia IUserRepository.
+     *
+     * @return una clase hija de la abstracción IUserRepository.
+     */
     public IUserRepository getRepositoryUser() {
         String type = Utilities.loadProperty("restaurant.repository");
         if (type.isEmpty()) {
@@ -74,6 +79,11 @@ public class Factory {
         return result;
     }
 
+    /**
+     * Método que crea una instancia concreta de la jerarquia IDishRepository.
+     *
+     * @return una clase hija de la abstracción IDishRepository.
+     */
     public IDishRepository getRepositoryDish() {
         String type = Utilities.loadProperty("restaurant.repository");
         if (type.isEmpty()) {

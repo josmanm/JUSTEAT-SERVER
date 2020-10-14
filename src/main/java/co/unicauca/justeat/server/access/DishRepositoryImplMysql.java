@@ -22,9 +22,15 @@ public class DishRepositoryImplMysql implements IDishRepository {
     public Connection conn;
     public Connection conn2;
 
+    /**
+     * Metodo encargado de crear un plato.
+     *
+     * @param parDish Objeto de tipo Dish.
+     * @return cadena de texto con el valor de platoId.
+     */
     @Override
     public String createDish(Dish parDish) {
-       try {
+        try {
             this.connect();
             String sql = "INSERT INTO plato(PlatoId, PlatNombre, PlatDescripcion, PlatPrecio) VALUES (?,?,?,?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -33,16 +39,15 @@ public class DishRepositoryImplMysql implements IDishRepository {
             pstmt.setString(3, parDish.getPlaDesc());
             pstmt.setDouble(4, parDish.getPlaPrecio());
             pstmt.executeUpdate();
-            String sql2 ="INSERT INTO Tiene (MenuId,PlatoId) VALUES (?,?) ";
+            String sql2 = "INSERT INTO Tiene (MenuId,PlatoId) VALUES (?,?) ";
             PreparedStatement pstmt2 = conn2.prepareStatement(sql2);
             pstmt2.setString(1, "1122");
             pstmt2.setString(2, parDish.getPlatoId());
             pstmt2.executeUpdate();
-            
+
             pstmt.close();
             pstmt2.close();
-            
-            
+
             this.disconnect();
         } catch (SQLException ex) {
             Logger.getLogger(RestaurantRepositoryImplMysql.class.getName()).log(Level.SEVERE, "Error al insertar el registro", ex);
@@ -65,6 +70,11 @@ public class DishRepositoryImplMysql implements IDishRepository {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Metodo que se encarga de realizar la conexion con la base de datos.
+     *
+     * @return 1, si la conexion fue exitosa, -1 si la conexion fue fallida.
+     */
     public int connect() {
         try {
             Class.forName(Utilities.loadProperty("server.db.driver"));
@@ -73,7 +83,7 @@ public class DishRepositoryImplMysql implements IDishRepository {
             String username = Utilities.loadProperty("server.db.username");
             String pwd = Utilities.loadProperty("server.db.password");
             conn = DriverManager.getConnection(url, username, pwd);
-            conn2=DriverManager.getConnection(url, username, pwd);
+            conn2 = DriverManager.getConnection(url, username, pwd);
             return 1;
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(RestaurantRepositoryImplMysql.class.getName()).log(Level.SEVERE, "Error al consultar Restaurante de la base de datos", ex);

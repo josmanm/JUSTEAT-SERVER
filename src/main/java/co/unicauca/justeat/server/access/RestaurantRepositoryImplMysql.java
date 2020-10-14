@@ -25,7 +25,7 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
     public Connection conn;
 
     /**
-     *Constructor por defecto.
+     * Constructor por defecto.
      */
     public RestaurantRepositoryImplMysql() {
 
@@ -64,7 +64,8 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
 
     /**
      * Metodo encargado de Eliminar un Restaurante.
-     * @return 
+     *
+     * @return
      */
     @Override
     public String deleteRestaurant() {
@@ -73,7 +74,8 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
 
     /**
      * Metodo encargado de actualizar la informacion sobre el Restaurante.
-     * @return 
+     *
+     * @return
      */
     @Override
     public String updateRestaurant() {
@@ -81,9 +83,13 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
     }
 
     /**
-     * Metodo encargado de crear un restaurante, Este metodo se sobre escribe debido a que es implementado de la interfaz IRestaurantRepository.
-     * @param parRestauran Objeto de tipo Restaurante, Este objeto servira para extraer informacion.
-     * @return retorna un valor de especifico del parametro parRestaurant (ResId).
+     * Metodo encargado de crear un restaurante, Este metodo se sobre escribe
+     * debido a que es implementado de la interfaz IRestaurantRepository.
+     *
+     * @param parRestauran Objeto de tipo Restaurante, Este objeto servira para
+     * extraer informacion.
+     * @return retorna un valor de especifico del parametro parRestaurant
+     * (ResId).
      */
     @Override
     public String createRestaurant(Restaurant parRestauran) {
@@ -108,7 +114,9 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
 
     /**
      * Metodo encargado de encontrar los restaurantes.
-     * @param resId cadena de texto, sirve para buscar un restaurante especifico.
+     *
+     * @param resId cadena de texto, sirve para buscar un restaurante
+     * especifico.
      * @return objeto de tipo restaurante, con la informacion de la busqueda.
      */
     @Override
@@ -137,10 +145,10 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
         return restaurant;
     }
 
-    
     /**
      * Metodo encargado de obtener una lista de todos los restaurantes.
-     * @return Se retorna una lista con los resultados de la busqueda. 
+     *
+     * @return Se retorna una lista con los resultados de la busqueda.
      */
     @Override
     public List<Restaurant> findAllRestaurant() {

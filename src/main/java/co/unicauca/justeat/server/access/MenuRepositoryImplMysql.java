@@ -10,16 +10,23 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author SANTIAGO MUÑOZ
- *         KEVIN ALARCON
- *         JUAN JOSE LOPEZ
- *         SANTIAGO CORDOBA
- *         DANIEL MUÑOZ
+ * @author SANTIAGO MUÑOZ, KEVIN ALARCON, JUAN LOPEZ ,SANTIAGO CORDOBA, DANIEL
+ * MUÑOZ
  */
 public class MenuRepositoryImplMysql implements IMenuRepository {
 
+    /**
+     * Objeto de tipo Connection, encargado de realizar la Conexion con Mysql.
+     */
     private Connection conn;
 
+    /**
+     * Metodo encargado de crear un menu, Este metodo se sobre escribe debido a
+     * que es implementado de la interfaz IMenuRepository.
+     *
+     * @param parMenu
+     * @return
+     */
     @Override
     public String createMenu(Menu parMenu) {
         try {
@@ -36,7 +43,7 @@ public class MenuRepositoryImplMysql implements IMenuRepository {
         } catch (SQLException ex) {
             Logger.getLogger(IOrderRepository.class.getName()).log(Level.SEVERE, "Error al insertar el registro", ex);
         }
-        return(parMenu.getMenuId());
+        return (parMenu.getMenuId());
     }
 
     @Override
