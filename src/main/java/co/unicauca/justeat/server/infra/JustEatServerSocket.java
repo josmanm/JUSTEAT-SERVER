@@ -26,8 +26,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-
-
 public class JustEatServerSocket implements Runnable{
        /**
      * private fin Servicio de clientes
@@ -40,13 +38,10 @@ public class JustEatServerSocket implements Runnable{
      */
     private static ServerSocket ssock;
     
-        private static ServerSocket ssock2;
     /**
      * Socket por donde se hace la petición/respuesta
      */
     private static Socket socket;
-    
-    private static Socket socket2;
     /**
      * Permite leer un flujo de datos del socket
      */
@@ -60,7 +55,7 @@ public class JustEatServerSocket implements Runnable{
      */
     private static final int PORT = Integer.parseInt(Utilities.loadProperty("server.port"));
     
-    private static final int PORT2 = Integer.parseInt(Utilities.loadProperty("server.port2"));
+
 
     public JustEatServerSocket() {
         // Se hace la inyección de dependencia
@@ -92,9 +87,7 @@ public class JustEatServerSocket implements Runnable{
     private static void openPort() {
         try {
             ssock = new ServerSocket(PORT);
-           // ssock2 = new ServerSocket(PORT2);
             Logger.getLogger("Server").log(Level.INFO, "Servidor iniciado, escuchando por el puerto {0}", PORT);
-            // Logger.getLogger("Server").log(Level.INFO, "Servidor iniciado, escuchando por el puerto {0}", PORT2);
         } catch (IOException ex) {
             Logger.getLogger(JustEatServerSocket.class.getName()).log(Level.SEVERE, "Error del server socket al abrir el puerto", ex);
         }
@@ -107,7 +100,6 @@ public class JustEatServerSocket implements Runnable{
     private static void waitToClient() {
         try {
             socket = ssock.accept();
-           // socket2 = ssock2.accept();
             Logger.getLogger("Socket").log(Level.INFO, "Socket conectado");
         } catch (IOException ex) {
             Logger.getLogger(JustEatServerSocket.class.getName()).log(Level.SEVERE, "Error al abrir un socket", ex);
@@ -183,6 +175,11 @@ public class JustEatServerSocket implements Runnable{
                     // Agregar un customer    
                     processPostRestaurant(protocolRequest);
                 }
+                if(protocolRequest.getAction().equals("gets")){
+                    //(consutlar todos los restaurantes
+                    processGetListRestaurant();
+                }
+                
                 break;
               case "Usuario":
 
@@ -240,7 +237,7 @@ public class JustEatServerSocket implements Runnable{
      * Procesa la solicitud para consultar todos los restaurantes. 
      * @param protocolRequest 
      */
-    private void processGetListRestaurant(Protocol protocolRequest) {
+    private void processGetListRestaurant() {
         List<Restaurant> listaRestaurant = service.ListRestaurant();
         if (!listaRestaurant.isEmpty()) {
             output.println(ArrayToJSON(listaRestaurant));
@@ -355,7 +352,6 @@ public class JustEatServerSocket implements Runnable{
         String strObject = gson.toJson(parUser);
         return strObject;
     }
-
     /**
      * Convierte Una lista de Restaurante a json para que el servidor lo envie como 
      * respuesta al socket.
@@ -364,7 +360,7 @@ public class JustEatServerSocket implements Runnable{
      */
     private String ArrayToJSON(List<Restaurant> parLista) {
         Gson gson = new Gson();
-        String strObject = gson.toJson(parLista);
+         String strObject=gson.toJson(parLista); 
         return strObject;
     }
 

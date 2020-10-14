@@ -65,7 +65,7 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
     public String updateRestaurant() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
     public String createRestaurant(Restaurant parRestauran) {
         try {
@@ -94,7 +94,7 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
             this.connect();
             String sql = "SELECT * from Restaurante where RestNombre=? ";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, resId );
+            pstmt.setString(1, resId);
             ResultSet res = pstmt.executeQuery();
             if (res.next()) {
                 restaurant = new Restaurant();
@@ -115,24 +115,22 @@ public class RestaurantRepositoryImplMysql implements IRestauranRepository {
 
     @Override
     public List<Restaurant> findAllRestaurant() {
-        List<Restaurant> objList = new ArrayList<>();
+        List<Restaurant> objList =  new ArrayList<Restaurant>();
         this.connect();
+        Restaurant objRestaurant = new Restaurant();
         try {
-            String sql = "SELECT * from Restaurante";
-            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                ResultSet res = pstmt.executeQuery();
-                
-                while (res.next()) {
-                    Restaurant objRestaurant = new Restaurant();
-                    objRestaurant.setResId(res.getString("restId"));
-                    objRestaurant.setUserName(res.getString("UserName"));
-                    objRestaurant.setResNom(res.getString("restNombre"));
-                    objRestaurant.setResDireccion(res.getString("restDireccion"));
-                    objRestaurant.setResCiudad(res.getString("restCiudad"));
-                    objRestaurant.setResTematicaComida(res.getString("restTematicaComida"));
-                    
-                    objList.add(objRestaurant);
-                }
+            String sql = "SELECT * FROM restaurante;";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet res = pstmt.executeQuery();
+            while (res.next()) { 
+                objRestaurant.setResId(res.getString("restId"));
+                objRestaurant.setUserName(res.getString("UserName"));
+                objRestaurant.setResNom(res.getString("restNombre"));
+                objRestaurant.setResDireccion(res.getString("restDireccion"));
+                objRestaurant.setResCiudad(res.getString("restCiudad"));
+                objRestaurant.setResTematicaComida(res.getString("restTematicaComida"));
+                objList.add(objRestaurant);
+                objRestaurant= new Restaurant();
             }
             this.disconnect();
         } catch (SQLException ex) {
