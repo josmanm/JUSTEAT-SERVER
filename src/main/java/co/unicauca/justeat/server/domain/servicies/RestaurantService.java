@@ -67,7 +67,9 @@ public class RestaurantService {
     }
 
     /**
-     * Metodo encargado de obtener una lista de todos los restaurantes existentes.
+     * Metodo encargado de obtener una lista de todos los restaurantes
+     * existentes.
+     *
      * @return llamado a metodo findAllRestaurant.
      */
     public List<Restaurant> ListRestaurant() {

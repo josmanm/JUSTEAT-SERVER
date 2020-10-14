@@ -1,13 +1,16 @@
 package co.unicauca.justeat.server.infra;
 
 import co.unicauca.justEat.server.access.Factory;
+import co.unicauca.justeat.commons.domain.Dish;
 import co.unicauca.justeat.commons.domain.Restaurant;
 import co.unicauca.justeat.commons.domain.User;
 import co.unicauca.justeat.commons.infra.JsonError;
 import co.unicauca.justeat.commons.infra.Protocol;
 import co.unicauca.justeat.commons.infra.Utilities;
+import co.unicauca.justeat.server.access.IDishRepository;
 import co.unicauca.justeat.server.access.IRestauranRepository;
 import co.unicauca.justeat.server.access.IUserRepository;
+import co.unicauca.justeat.server.domain.servicies.DishService;
 import co.unicauca.justeat.server.domain.servicies.RestaurantService;
 import co.unicauca.justeat.server.domain.servicies.UserService;
 import com.google.gson.Gson;
@@ -32,6 +35,8 @@ public class JustEatServerSocket implements Runnable {
      * Objeto de tipo RestaurantService.
      */
     private final RestaurantService service;
+
+    private final DishService serviceDish;
 
     /**
      * Objeto de tipo UserService.
@@ -76,6 +81,9 @@ public class JustEatServerSocket implements Runnable {
 
         IUserRepository repository1 = Factory.getInstance().getRepositoryUser();
         service2 = new UserService(repository1);
+
+        IDishRepository repositoryDish = Factory.getInstance().getRepositoryDish();
+        serviceDish = new DishService(repositoryDish);
     }
 
     /**
@@ -191,7 +199,6 @@ public class JustEatServerSocket implements Runnable {
                     //(consutlar todos los restaurantes
                     processGetListRestaurant();
                 }
-
                 break;
             case "Usuario":
 
@@ -205,6 +212,10 @@ public class JustEatServerSocket implements Runnable {
                     processPostUser(protocolRequest);
                 }
                 break;
+            case "Dish":
+                if (protocolRequest.getAction().equals("post")) {
+                    processPostDish(protocolRequest);
+                }
         }
 
     }
@@ -275,6 +286,20 @@ public class JustEatServerSocket implements Runnable {
         varRestaurant.setResCiudad(protocolRequest.getParameters().get(4).getValue());
         varRestaurant.setResTematicaComida(protocolRequest.getParameters().get(5).getValue());
         String response = service.CreateRestaurant(varRestaurant);
+        output.println(response);
+    }
+
+    /**
+     * Procesa la solicitud de agregar un plato.
+     */
+    private void processPostDish(Protocol protocolRequest) {
+        Dish objDish = new Dish();
+
+        objDish.setPlatoId(protocolRequest.getParameters().get(0).getValue());
+        objDish.setPlanNom(protocolRequest.getParameters().get(1).getValue());
+        objDish.setPlaDesc(protocolRequest.getParameters().get(2).getValue());
+        objDish.setPlaPrecio(Double.parseDouble(protocolRequest.getParameters().get(3).getValue()));
+        String response = serviceDish.CreateDish(objDish);
         output.println(response);
     }
 

@@ -1,6 +1,8 @@
 package co.unicauca.justEat.server.access;
 
 import co.unicauca.justeat.commons.infra.Utilities;
+import co.unicauca.justeat.server.access.DishRepositoryImplMysql;
+import co.unicauca.justeat.server.access.IDishRepository;
 import co.unicauca.justeat.server.access.IRestauranRepository;
 import co.unicauca.justeat.server.access.IUserRepository;
 import co.unicauca.justeat.server.access.RestauranRepositoryImplArrays;
@@ -9,11 +11,8 @@ import co.unicauca.justeat.server.access.UserRepositoryImplMysql;
 
 /**
  *
- * @author SANTIAGO MUÑOZ
- *         KEVIN ALARCON
- *         JUAN JOSE LOPEZ
- *         SANTIAGO CORDOBA
- *         DANIEL MUÑOZ
+ * @author SANTIAGO MUÑOZ KEVIN ALARCON JUAN JOSE LOPEZ SANTIAGO CORDOBA DANIEL
+ * MUÑOZ
  */
 public class Factory {
 
@@ -59,8 +58,8 @@ public class Factory {
         }
         return result;
     }
-    
-    public IUserRepository getRepositoryUser(){
+
+    public IUserRepository getRepositoryUser() {
         String type = Utilities.loadProperty("restaurant.repository");
         if (type.isEmpty()) {
             type = "mysql";
@@ -70,6 +69,20 @@ public class Factory {
         switch (type) {
             case "mysql":
                 result = new UserRepositoryImplMysql();
+                break;
+        }
+        return result;
+    }
+
+    public IDishRepository getRepositoryDish() {
+        String type = Utilities.loadProperty("restaurant.repository");
+        if (type.isEmpty()) {
+            type = "mysql";
+        }
+        IDishRepository result = null;
+        switch (type) {
+            case "mysql":
+                result = new DishRepositoryImplMysql();
                 break;
         }
         return result;

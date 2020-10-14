@@ -1,5 +1,7 @@
 package co.unicauca.justeat.server.access;
 
+import co.unicauca.justeat.commons.domain.Dish;
+
 /**
  *
  * @author SANTIAGO MUÑOZ
@@ -9,8 +11,8 @@ package co.unicauca.justeat.server.access;
  *         DANIEL MUÑOZ
  */
 public interface IDishRepository {
-    public String createCustomer();
-    public String deleteCustomer();
-    public String uptadeCustomer();
-    public String findCustomer();
+    public String createDish(Dish parDish);
+    public String deleteDish();
+    public String uptadeDish();
+    public String findDish();
 }
